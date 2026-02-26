@@ -16,11 +16,11 @@
     <Filter Include="resources">
       <UniqueIdentifier>{1367e685-7186-4107-acd6-e93fd9ab3949}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\models">
+      <UniqueIdentifier>{1033af2b-cf32-420b-b58e-040439343e76}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="include\diagonalPanel.h">
-      <Filter>include</Filter>
-    </QtMoc>
     <QtMoc Include="include\LoginWindow.h">
       <Filter>include</Filter>
     </QtMoc>
@@ -35,14 +35,11 @@
     <QtUic Include="forms\QtWidgetsClass.ui">
       <Filter>forms</Filter>
     </QtUic>
-    <QtUic Include="SignIn.ui">
+    <QtUic Include="forms\SignIn.ui">
       <Filter>forms</Filter>
     </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\DiagonalPanel.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\LoginWindow.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -59,6 +56,9 @@
   <ItemGroup>
     <ClInclude Include="include\SignIn.h">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\models\User.h">
+      <Filter>include\models</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -19,9 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="include\diagonalPanel.h" />
-  </ItemGroup>
-  <ItemGroup>
     <QtMoc Include="include\LoginWindow.h" />
   </ItemGroup>
   <ItemGroup>
@@ -30,10 +27,9 @@
   <ItemGroup>
     <QtUic Include="forms\LoginWindow.ui" />
     <QtUic Include="forms\QtWidgetsClass.ui" />
-    <QtUic Include="SignIn.ui" />
+    <QtUic Include="forms\SignIn.ui" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\DiagonalPanel.cpp" />
     <ClCompile Include="src\LoginWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\QtWidgetsClass.cpp" />
@@ -46,6 +42,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\models\User.h" />
     <ClInclude Include="include\SignIn.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
