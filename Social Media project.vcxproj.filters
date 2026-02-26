@@ -15,39 +15,42 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="Resource.qrc" />
+    <QtMoc Include="include\diagonalPanel.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\LoginWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\QtWidgetsClass.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source Files\DiagonalPanel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\LoginWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\QtWidgetsClass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <QtUic Include="Resource Files\LoginWindow.ui">
+    <QtUic Include="forms\LoginWindow.ui">
       <Filter>Resource Files</Filter>
     </QtUic>
-    <QtUic Include="Resource Files\QtWidgetsClass.ui">
+    <QtUic Include="forms\QtWidgetsClass.ui">
       <Filter>Resource Files</Filter>
     </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="Header files\diagonalPanel.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Header files\LoginWindow.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Header files\QtWidgetsClass.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
+    <ClCompile Include="src\DiagonalPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LoginWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\QtWidgetsClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="resources\Resource.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
 </Project>

@@ -18,6 +18,31 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="include\diagonalPanel.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="include\LoginWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="include\QtWidgetsClass.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="forms\LoginWindow.ui" />
+    <QtUic Include="forms\QtWidgetsClass.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\DiagonalPanel.cpp" />
+    <ClCompile Include="src\LoginWindow.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\QtWidgetsClass.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="resources\Resource.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -99,6 +124,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,6 +153,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,28 +175,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <QtRcc Include="Resource.qrc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source Files\DiagonalPanel.cpp" />
-    <ClCompile Include="Source Files\LoginWindow.cpp" />
-    <ClCompile Include="Source Files\main.cpp" />
-    <ClCompile Include="Source Files\QtWidgetsClass.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtUic Include="Resource Files\LoginWindow.ui" />
-    <QtUic Include="Resource Files\QtWidgetsClass.ui" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="Header files\diagonalPanel.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="Header files\LoginWindow.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="Header files\QtWidgetsClass.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />
   <ImportGroup Label="ExtensionTargets">
