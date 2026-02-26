@@ -30,18 +30,23 @@
   <ItemGroup>
     <QtUic Include="forms\LoginWindow.ui" />
     <QtUic Include="forms\QtWidgetsClass.ui" />
+    <QtUic Include="SignIn.ui" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DiagonalPanel.cpp" />
     <ClCompile Include="src\LoginWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\QtWidgetsClass.cpp" />
+    <ClCompile Include="src\SignIn.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="resources\Resource.qrc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\SignIn.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -140,6 +145,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -169,6 +175,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
