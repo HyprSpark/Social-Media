@@ -30,3 +30,10 @@ Project Properties → C/C++ → Additional Include Directories
 
 ## Status
 - Work in progress
+
+## Roadmap
+- [x] Login UI
+- [ ] User registration
+- [ ] Main feed UI
+- [ ] Post system
+- [ ] Database integration
