@@ -149,26 +149,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DiagonalPanel.cpp" />
-    <ClCompile Include="LoginWindow.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="QtWidgetsClass.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtUic Include="LoginWindow.ui" />
-    <QtUic Include="QtWidgetsClass.ui" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="QtWidgetsClass.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="LoginWindow.h" />
-  </ItemGroup>
-  <ItemGroup>
     <QtRcc Include="Resource.qrc" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="diagonalPanel.h" />
+    <ClCompile Include="Source Files\DiagonalPanel.cpp" />
+    <ClCompile Include="Source Files\LoginWindow.cpp" />
+    <ClCompile Include="Source Files\main.cpp" />
+    <ClCompile Include="Source Files\QtWidgetsClass.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="Resource Files\LoginWindow.ui" />
+    <QtUic Include="Resource Files\QtWidgetsClass.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Header files\diagonalPanel.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Header files\LoginWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Header files\QtWidgetsClass.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />
