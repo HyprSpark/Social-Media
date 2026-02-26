@@ -1,5 +1,7 @@
+// -- Headers --
 #include "LoginWindow.h"
-#include "DiagonalPanel.h"
+
+// -- Libraries --
 #include <QPushButton>
 #include <QPixmap>
 
@@ -14,19 +16,16 @@ LoginWindow::LoginWindow(QWidget* parent)
 {
     ui.setupUi(this);
 
-    connect(ui.signInButton, &QPushButton::clicked,
+   connect(ui.signInButton, &QPushButton::clicked,
         this, &LoginWindow::onSignInClicked);
 
-    QPixmap px(":/resources/images/cheers.jpg");
+    QPixmap px(":/resources/images/cheers.jpg"); // Load the image located in the Resource.qrc file
     ui.heroImageLabel->setPixmap(px);
-
-    if (px.isNull()) {
+    
+    if (px.isNull()) { // If file is missing or corrupt show error message
         ui.statusLabel->setText("Image not found (resource path wrong).");
     }
-
-    DiagonalPanel* panel = new DiagonalPanel(ui.widget);
-    panel->setGeometry(0, 0, ui.widget->width(), ui.widget->height());
-    panel->lower();
+    
 }
 
 LoginWindow::~LoginWindow() {}

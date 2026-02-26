@@ -1,5 +1,8 @@
+// -- Libraries --
 #include <iostream>
 #include <QApplication>
+
+// -- Headers --
 #include "QtWidgetsClass.h"
 #include "LoginWindow.h"
 
@@ -7,10 +10,11 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 
-	QApplication app(argc, argv);
+	QApplication app(argc, argv); // Accessing and running Qt
 
-	LoginWindow w;
-	w.show();
+	LoginWindow w; //Assigning LoginWindow as "w"
+
+	w.show(); // Printing LoginWindow to user screen
 
 	return app.exec();
 
