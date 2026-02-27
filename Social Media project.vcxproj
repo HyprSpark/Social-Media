@@ -22,18 +22,13 @@
     <QtMoc Include="include\LoginWindow.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="include\QtWidgetsClass.h" />
-  </ItemGroup>
-  <ItemGroup>
     <QtUic Include="forms\LoginWindow.ui" />
-    <QtUic Include="forms\QtWidgetsClass.ui" />
-    <QtUic Include="forms\SignIn.ui" />
+    <QtUic Include="SignUpWindow.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SignUpWindow.cpp" />
     <ClCompile Include="src\LoginWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\QtWidgetsClass.cpp" />
-    <ClCompile Include="src\SignIn.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="resources\Resource.qrc" />
@@ -43,7 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\models\User.h" />
-    <ClInclude Include="include\SignIn.h" />
+    <QtMoc Include="SignUpWindow.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

@@ -24,7 +24,7 @@
     <QtMoc Include="include\LoginWindow.h">
       <Filter>include</Filter>
     </QtMoc>
-    <QtMoc Include="include\QtWidgetsClass.h">
+    <QtMoc Include="SignUpWindow.h">
       <Filter>include</Filter>
     </QtMoc>
   </ItemGroup>
@@ -32,10 +32,7 @@
     <QtUic Include="forms\LoginWindow.ui">
       <Filter>forms</Filter>
     </QtUic>
-    <QtUic Include="forms\QtWidgetsClass.ui">
-      <Filter>forms</Filter>
-    </QtUic>
-    <QtUic Include="forms\SignIn.ui">
+    <QtUic Include="SignUpWindow.ui">
       <Filter>forms</Filter>
     </QtUic>
   </ItemGroup>
@@ -46,17 +43,11 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\QtWidgetsClass.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SignIn.cpp">
+    <ClCompile Include="SignUpWindow.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\SignIn.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\models\User.h">
       <Filter>include\models</Filter>
     </ClInclude>
