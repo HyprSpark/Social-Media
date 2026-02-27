@@ -3,7 +3,6 @@
 #include <QApplication>
 
 // -- Headers --
-#include "QtWidgetsClass.h"
 #include "LoginWindow.h"
 
 using namespace std;
