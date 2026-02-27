@@ -33,7 +33,7 @@
     <ClCompile Include="src\LoginWindow.cpp" />
     <ClCompile Include="src\SignUpWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="userManager.cpp" />
+    <ClCompile Include="src\userManager.cpp" />
   </ItemGroup>
   <!-- RESOURCES -->
   <ItemGroup>
@@ -42,7 +42,7 @@
   <!-- HEADERS -->
   <ItemGroup>
     <ClInclude Include="include\models\User.h" />
-    <ClInclude Include="userManager.h" />
+    <ClInclude Include="include\userManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
