@@ -1,7 +1,12 @@
 #pragma once
 
-#include <QMainWindow>
+// -- Headers --
 #include "ui_LoginWindow.h"
+
+
+// -- Libraries --
+#include <QMainWindow>
+
 
 class LoginWindow : public QMainWindow
 {
@@ -17,6 +22,7 @@ private:
 
 private slots:
 	void onSignInClicked();
+	void onSignUpClicked();
 
 };
 

@@ -100,7 +100,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="createAccountButton">
+         <widget class="QPushButton" name="signUpButton">
           <property name="text">
            <string>Create Account</string>
           </property>

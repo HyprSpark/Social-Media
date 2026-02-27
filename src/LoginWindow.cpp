@@ -1,5 +1,6 @@
 // -- Headers --
 #include "LoginWindow.h"
+#include "SignUpWindow.h"
 
 // -- Libraries --
 #include <QPushButton>
@@ -16,14 +17,19 @@ LoginWindow::LoginWindow(QWidget* parent)
 {
     ui.setupUi(this);
 
-   connect(ui.signInButton, &QPushButton::clicked,
+   connect(ui.signInButton, &QPushButton::clicked, // login function
         this, &LoginWindow::onSignInClicked);
+
+   connect(ui.signUpButton, &QPushButton::clicked, // Switch function
+       this, &LoginWindow::onSignUpClicked);
 
     QPixmap px(":/resources/images/cheers.jpg"); // Load the image located in the Resource.qrc file
     ui.heroImageLabel->setPixmap(px);
     
     if (px.isNull()) { // If file is missing or corrupt show error message
         ui.statusLabel->setText("Image not found (resource path wrong).");
+
+        
     }
     
 }
@@ -40,10 +46,18 @@ void LoginWindow::onSignInClicked()
         return;
     }
 
+    // Giving test data 
     if (email == "test" && password == "1234") {
         close();
     }
     else {
         ui.statusLabel->setText("Invalid email or password.");
     }
+}
+// - Switching to the Sign Up page when the user chooses create account
+void LoginWindow::onSignUpClicked()
+{
+    SignUpWindow* signup = new SignUpWindow(this);
+    signup->show(); // Displays the signup window
+    this->hide();   // hides login while signup is open
 }

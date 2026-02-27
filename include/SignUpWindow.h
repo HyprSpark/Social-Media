@@ -13,5 +13,8 @@ public:
 
 private:
 	Ui::SignUpWindowClass ui;
+
+private slots:
+	void onLogInClicked();
 };
 

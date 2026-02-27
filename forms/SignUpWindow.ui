@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>1000</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,6 +32,80 @@
      <height>600</height>
     </size>
    </property>
+   <widget class="QWidget" name="detailWidget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>110</y>
+      <width>231</width>
+      <height>236</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLineEdit" name="usernameEdit">
+       <property name="text">
+        <string>username</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="emailEdit">
+       <property name="text">
+        <string>Email</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="passEdit">
+       <property name="text">
+        <string>Password</string>
+       </property>
+       <property name="echoMode">
+        <enum>QLineEdit::EchoMode::Password</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="passConfEdit">
+       <property name="text">
+        <string>Password</string>
+       </property>
+       <property name="echoMode">
+        <enum>QLineEdit::EchoMode::Password</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="statusLabel">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="creeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeateButton">
+       <property name="text">
+        <string>Create Account</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="placeholderLabel">
+       <property name="text">
+        <string>Already have an account?</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="logInButton">
+       <property name="text">
+        <string>Login With existing account</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
