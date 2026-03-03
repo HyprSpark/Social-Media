@@ -6,7 +6,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 
-// - Accessing the file and loading user details
+// - Accessing the file and loading user details (returns empty if file not found)
 QVector<User> UserManager::loadUsers()
 {
     QVector<User> users;
@@ -27,8 +27,8 @@ QVector<User> UserManager::loadUsers()
 // - Adding users to the user file to allow for logging in
 void UserManager::saveUser(const User& user) 
 {
-    QVector<User> users = loadUsers(); // Load user list and add new entry to list
-    users.append(user);
+    // Load user list and add new entry 
+    QVector<User> users = loadUsers(); // This prevent data from being overwrote
 
     QJsonArray array;
     for (const auto& u : users)
@@ -40,7 +40,7 @@ void UserManager::saveUser(const User& user)
 }
 
 // Checking if the user details match saved data
-bool UserManager::authenticate(const QString& email, const QString& password) 
+bool UserManager::authenticate(const QString& email, const QString& password) // Phonebook style (Could change this in the future)
 {
     QVector<User> users = loadUsers();
 

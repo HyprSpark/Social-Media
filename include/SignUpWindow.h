@@ -1,7 +1,11 @@
-#pragma once
+#pragma once // Prevents multiple loading
 
-#include <QMainWindow>
+// -- Headers --
 #include "ui_SignUpWindow.h"
+
+// -- Libraries --
+#include <QMainWindow>
+
 
 class SignUpWindow : public QMainWindow
 {

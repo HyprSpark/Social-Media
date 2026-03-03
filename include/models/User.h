@@ -1,4 +1,5 @@
-#pragma once
+#pragma once // Prevents multiole loads
+
 // -- Libraries --
 #include <QString>
 #include <QJsonObject>
@@ -10,7 +11,7 @@ public:
     QString email;
     QString password;
 
-    User() {}
+    User() {} // Create an empty user w/ no data
 
     User(const QString& username,
         const QString& email,
@@ -18,7 +19,7 @@ public:
         : username(username), email(email), password(password) {
     }
 
-    QJsonObject toJson() const
+    QJsonObject toJson() const // tells the C++ to work in JSON
     {
         QJsonObject obj;
         obj["username"] = username;
@@ -27,12 +28,12 @@ public:
         return obj;
     }
 
-    static User fromJson(const QJsonObject& obj)
+    static User fromJson(const QJsonObject& obj) // Converts JSON to  C++ as a 'user' object, allowing c++ to readit
     {
         return User(
-            obj["username"].toString(),
-            obj["email"].toString(),
-            obj["password"].toString()
+            obj["username"].toString("Unknown"), // Defaults to said value if missing
+            obj["email"].toString("No Email"),
+            obj["password"].toString("")
         );
     }
 };

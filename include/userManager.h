@@ -9,7 +9,12 @@
 class UserManager
 {
 public:
-    static QVector<User> loadUsers();
-    static void saveUser(const User& user);
-    static bool authenticate(const QString& email, const QString& password);
+    // Reads the user file
+    static QVector<User> loadUsers(); 
+
+    // Write the entered 'sign up' to JSON file
+    static void saveUser(const User& user); 
+
+    // Check if entered login data enetred matches saved data (returns true/false)
+    static bool authenticate(const QString& email, const QString& password); 
 };
