@@ -67,5 +67,8 @@
     <None Include="README.md">
       <Filter>resources</Filter>
     </None>
+    <None Include="User.json">
+      <Filter>resources</Filter>
+    </None>
   </ItemGroup>
 </Project>

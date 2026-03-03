@@ -11,7 +11,7 @@ QVector<User> UserManager::loadUsers()
 {
     QVector<User> users;
 
-    QFile file("users.json"); // Check and open user file (r)
+    QFile file(":/resources/Users.json"); // Check and open user file (r)
     if (!file.open(QIODevice::ReadOnly))
         return users;
 

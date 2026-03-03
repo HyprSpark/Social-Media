@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+    <None Include="User.json" />
   </ItemGroup>
   <!-- GLOBALS -->
   <PropertyGroup Label="Globals">
