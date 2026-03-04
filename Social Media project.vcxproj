@@ -28,10 +28,12 @@
     <QtUic Include="FeedWindow.ui" />
     <QtUic Include="forms\LoginWindow.ui" />
     <QtUic Include="forms\SignUpWindow.ui" />
+    <QtUic Include="PostWidget.ui" />
   </ItemGroup>
   <!-- CPP FILES -->
   <ItemGroup>
     <ClCompile Include="FeedWindow.cpp" />
+    <ClCompile Include="PostWidget.cpp" />
     <ClCompile Include="src\LoginWindow.cpp" />
     <ClCompile Include="src\SignUpWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -46,6 +48,7 @@
     <ClInclude Include="FeedWindow.h" />
     <ClInclude Include="include\models\User.h" />
     <ClInclude Include="include\userManager.h" />
+    <ClInclude Include="PostWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
