@@ -25,11 +25,13 @@
   </ItemGroup>
   <!-- UI -->
   <ItemGroup>
+    <QtUic Include="FeedWindow.ui" />
     <QtUic Include="forms\LoginWindow.ui" />
     <QtUic Include="forms\SignUpWindow.ui" />
   </ItemGroup>
   <!-- CPP FILES -->
   <ItemGroup>
+    <ClCompile Include="FeedWindow.cpp" />
     <ClCompile Include="src\LoginWindow.cpp" />
     <ClCompile Include="src\SignUpWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -41,6 +43,7 @@
   </ItemGroup>
   <!-- HEADERS -->
   <ItemGroup>
+    <ClInclude Include="FeedWindow.h" />
     <ClInclude Include="include\models\User.h" />
     <ClInclude Include="include\userManager.h" />
   </ItemGroup>

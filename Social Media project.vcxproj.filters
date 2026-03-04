@@ -35,6 +35,9 @@
     <QtUic Include="forms\SignUpWindow.ui">
       <Filter>forms</Filter>
     </QtUic>
+    <QtUic Include="FeedWindow.ui">
+      <Filter>forms</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\LoginWindow.cpp">
@@ -49,12 +52,18 @@
     <ClCompile Include="src\userManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="FeedWindow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\models\User.h">
       <Filter>include\models</Filter>
     </ClInclude>
     <ClInclude Include="include\userManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="FeedWindow.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
