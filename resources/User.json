@@ -1,7 +1,17 @@
 [
-  {
-    "username": "testuser",
-    "email": "email@test",
-    "password": "password"
-  }
+    {
+        "email": "email@test",
+        "password": "password",
+        "username": "testuser"
+    },
+    {
+        "email": "dawid@.com",
+        "password": "123456",
+        "username": "dad"
+    },
+    {
+        "email": "test@test.com",
+        "password": "123456",
+        "username": "testtest"
+    }
 ]

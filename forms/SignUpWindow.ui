@@ -45,6 +45,9 @@
      <item>
       <widget class="QLineEdit" name="usernameEdit">
        <property name="text">
+        <string/>
+       </property>
+       <property name="placeholderText">
         <string>username</string>
        </property>
       </widget>
@@ -52,6 +55,9 @@
      <item>
       <widget class="QLineEdit" name="emailEdit">
        <property name="text">
+        <string/>
+       </property>
+       <property name="placeholderText">
         <string>Email</string>
        </property>
       </widget>
@@ -59,20 +65,26 @@
      <item>
       <widget class="QLineEdit" name="passEdit">
        <property name="text">
-        <string>Password</string>
+        <string/>
        </property>
        <property name="echoMode">
         <enum>QLineEdit::EchoMode::Password</enum>
+       </property>
+       <property name="placeholderText">
+        <string>Password</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QLineEdit" name="passConfEdit">
        <property name="text">
-        <string>Password</string>
+        <string/>
        </property>
        <property name="echoMode">
         <enum>QLineEdit::EchoMode::Password</enum>
+       </property>
+       <property name="placeholderText">
+        <string>Password</string>
        </property>
       </widget>
      </item>

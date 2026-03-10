@@ -33,11 +33,41 @@ void SignUpWindow::onCreateAccClicked()
 	QString password = ui.passEdit->text();
 	QString passwordConf = ui.passConfEdit->text();
 
+	// 1. Empty Field Check (Did they forget to fill something in?)
 	if (username.isEmpty() || email.isEmpty() || password.isEmpty() || passwordConf.isEmpty()) {
 		ui.statusLabel->setText("Please fill in all fields.");
 		return;
 
 	}
+
+    // 2. Email Validation (Basic check for @ and .com)
+    if (!email.contains("@") || !email.endsWith(".com")) {
+        ui.statusLabel->setText("Please enter a valid .com email.");
+        return;
+    }
+
+    // 3. Password Length (Minimum 6 characters)
+    if (password.length() < 6) {
+        ui.statusLabel->setText("Password must be at least 6 characters.");
+        return;
+    }
+
+    if (username.contains(" ")) {
+        ui.statusLabel->setText("Username cannot contain spaces.");
+        return;
+    }
+
+    // 2. Check for Spaces in Email (Emails shouldn't have them anyway)
+    if (email.contains(" ")) {
+        ui.statusLabel->setText("Email cannot contain spaces.");
+        return;
+    }
+
+    // 3. Check for Uniqueness
+    if (!UserManager::isUnique(username, email)) {
+        ui.statusLabel->setText("Username or Email is already taken.");
+        return;
+    }
 
 	User newUser(username, email, password);
 	UserManager::saveUser(newUser);
