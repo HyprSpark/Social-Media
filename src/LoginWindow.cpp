@@ -1,6 +1,8 @@
 // -- Headers --
 #include "LoginWindow.h"
 #include "SignUpWindow.h"
+#include "FeedWindow.h"
+#include "userManager.h"
 
 // -- Libraries --
 #include <QPushButton>
@@ -47,8 +49,15 @@ void LoginWindow::onSignInClicked()
     }
 
     // Giving test data 
-    if (email == "test" && password == "1234") {
-        close();
+    if (UserManager::authenticate(email, password)) {
+	
+		FeedWindow* feed = new FeedWindow(); // Creates a new instance of the FeedWindow class
+
+		feed->setAttribute(Qt::WA_DeleteOnClose); // Ensures the feed window is deleted from memory when closed
+
+		feed->show(); // Displays the feed window
+
+		this->close(); // Closes the login window
     }
     else {
         ui.statusLabel->setText("Invalid email or password.");

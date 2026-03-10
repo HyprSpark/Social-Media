@@ -3,6 +3,7 @@
 
 // -- Libraries --
 #include <QFile>
+#include <QDebug>
 #include <QJsonDocument>
 #include <QJsonArray>
 
@@ -11,7 +12,19 @@ QVector<User> UserManager::loadUsers()
 {
     QVector<User> users;
 
-    QFile file(":/resources/Users.json"); // Check and open user file (r)
+    QFile file("Users.json"); // Check and open user file (r)
+    if (!file.exists()) {
+        qDebug() << "LOG: Local Users.json not found, trying resource...";
+        file.setFileName(":/resources/Users.json");
+    }
+
+    // Checkpoint 2: Can we open it?
+    if (!file.open(QIODevice::ReadOnly)) {
+        qDebug() << "ERROR: Could not open file at all. Path:" << file.fileName();
+        return users;
+    }
+
+    qDebug() << "SUCCESS: File opened:" << file.fileName();
     if (!file.open(QIODevice::ReadOnly))
         return users;
 

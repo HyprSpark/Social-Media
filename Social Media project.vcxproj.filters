@@ -27,6 +27,12 @@
     <QtMoc Include="include\SignUpWindow.h">
       <Filter>include</Filter>
     </QtMoc>
+    <QtMoc Include="include\FeedWindow.h">
+      <Filter>include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\PostWidget.h">
+      <Filter>include</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="forms\LoginWindow.ui">
@@ -35,10 +41,10 @@
     <QtUic Include="forms\SignUpWindow.ui">
       <Filter>forms</Filter>
     </QtUic>
-    <QtUic Include="FeedWindow.ui">
+    <QtUic Include="forms\FeedWindow.ui">
       <Filter>forms</Filter>
     </QtUic>
-    <QtUic Include="PostWidget.ui">
+    <QtUic Include="forms\PostWidget.ui">
       <Filter>forms</Filter>
     </QtUic>
   </ItemGroup>
@@ -55,10 +61,10 @@
     <ClCompile Include="src\userManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="FeedWindow.cpp">
+    <ClCompile Include="src\FeedWindow.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="PostWidget.cpp">
+    <ClCompile Include="src\PostWidget.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -67,12 +73,6 @@
       <Filter>include\models</Filter>
     </ClInclude>
     <ClInclude Include="include\userManager.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="FeedWindow.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="PostWidget.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
@@ -85,7 +85,7 @@
     <None Include="README.md">
       <Filter>resources</Filter>
     </None>
-    <None Include="User.json">
+    <None Include="resources\User.json">
       <Filter>resources</Filter>
     </None>
   </ItemGroup>

@@ -20,5 +20,6 @@ private:
 
 private slots:
 	void onLogInClicked();
+	void onCreateAccClicked();
 };
 

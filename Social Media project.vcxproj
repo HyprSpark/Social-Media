@@ -25,16 +25,16 @@
   </ItemGroup>
   <!-- UI -->
   <ItemGroup>
-    <QtUic Include="FeedWindow.ui" />
+    <QtUic Include="forms\FeedWindow.ui" />
     <QtUic Include="forms\LoginWindow.ui" />
+    <QtUic Include="forms\PostWidget.ui" />
     <QtUic Include="forms\SignUpWindow.ui" />
-    <QtUic Include="PostWidget.ui" />
   </ItemGroup>
   <!-- CPP FILES -->
   <ItemGroup>
-    <ClCompile Include="FeedWindow.cpp" />
-    <ClCompile Include="PostWidget.cpp" />
+    <ClCompile Include="src\FeedWindow.cpp" />
     <ClCompile Include="src\LoginWindow.cpp" />
+    <ClCompile Include="src\PostWidget.cpp" />
     <ClCompile Include="src\SignUpWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\userManager.cpp" />
@@ -45,14 +45,14 @@
   </ItemGroup>
   <!-- HEADERS -->
   <ItemGroup>
-    <ClInclude Include="FeedWindow.h" />
+    <QtMoc Include="include\FeedWindow.h" />
     <ClInclude Include="include\models\User.h" />
+    <QtMoc Include="include\PostWidget.h" />
     <ClInclude Include="include\userManager.h" />
-    <ClInclude Include="PostWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
-    <None Include="User.json" />
+    <None Include="resources\User.json" />
   </ItemGroup>
   <!-- GLOBALS -->
   <PropertyGroup Label="Globals">
