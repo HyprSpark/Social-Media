@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/resources">
-        <file>images/cheers.jpg</file>
+        <file>images/LoginBackground.png</file>
+        <file>images/SignInBackground.png</file>
     </qresource>
 </RCC>
