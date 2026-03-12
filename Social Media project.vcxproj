@@ -27,14 +27,16 @@
   <ItemGroup>
     <QtUic Include="forms\FeedWindow.ui" />
     <QtUic Include="forms\LoginWindow.ui" />
-    <QtUic Include="forms\PostWidget.ui" />
     <QtUic Include="forms\SignUpWindow.ui" />
+    <QtUic Include="Posts.ui" />
+    <QtUic Include="Profile.ui" />
   </ItemGroup>
   <!-- CPP FILES -->
   <ItemGroup>
+    <ClCompile Include="Posts.cpp" />
+    <ClCompile Include="Profile.cpp" />
     <ClCompile Include="src\FeedWindow.cpp" />
     <ClCompile Include="src\LoginWindow.cpp" />
-    <ClCompile Include="src\PostWidget.cpp" />
     <ClCompile Include="src\SignUpWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\userManager.cpp" />
@@ -45,9 +47,11 @@
   </ItemGroup>
   <!-- HEADERS -->
   <ItemGroup>
+    <QtMoc Include="Profile.h" />
+    <QtMoc Include="Posts.h" />
     <QtMoc Include="include\FeedWindow.h" />
+    <ClInclude Include="Content.h" />
     <ClInclude Include="include\models\User.h" />
-    <QtMoc Include="include\PostWidget.h" />
     <ClInclude Include="include\userManager.h" />
   </ItemGroup>
   <ItemGroup>
@@ -82,7 +86,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v145</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
