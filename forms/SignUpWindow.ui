@@ -35,8 +35,8 @@
    <widget class="QWidget" name="detailWidget" native="true">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>110</y>
+      <x>700</x>
+      <y>130</y>
       <width>231</width>
       <height>236</height>
      </rect>
@@ -118,6 +118,27 @@
      </item>
     </layout>
    </widget>
+   <widget class="QLabel" name="heroImageLabel">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1000</width>
+      <height>600</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>1000</width>
+      <height>600</height>
+     </size>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <zorder>heroImageLabel</zorder>
+   <zorder>detailWidget</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

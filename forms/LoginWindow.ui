@@ -41,125 +41,107 @@
      <height>600</height>
     </size>
    </property>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QLabel" name="heroImageLabel">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>-50</y>
-      <width>1028</width>
-      <height>802</height>
+      <x>0</x>
+      <y>0</y>
+      <width>1000</width>
+      <height>600</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="minimumSize">
+     <size>
+      <width>1000</width>
+      <height>600</height>
+     </size>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>31</x>
+      <y>151</y>
+      <width>420</width>
+      <height>176</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>420</width>
+      <height>100</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>420</width>
+      <height>400</height>
+     </size>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QWidget" name="widget" native="true">
-       <property name="minimumSize">
-        <size>
-         <width>420</width>
-         <height>100</height>
-        </size>
+      <widget class="QLabel" name="welcomeLabel">
+       <property name="text">
+        <string>Welcome!</string>
        </property>
-       <property name="maximumSize">
-        <size>
-         <width>420</width>
-         <height>400</height>
-        </size>
+       <property name="scaledContents">
+        <bool>false</bool>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QLabel" name="welcomeLabel">
-          <property name="text">
-           <string>Welcome!</string>
-          </property>
-          <property name="scaledContents">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="emailEdit">
-          <property name="inputMask">
-           <string/>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="placeholderText">
-           <string>example@example.com</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="passwordEdit">
-          <property name="echoMode">
-           <enum>QLineEdit::EchoMode::Password</enum>
-          </property>
-          <property name="placeholderText">
-           <string>Password</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="signInButton">
-          <property name="text">
-           <string>Sign In</string>
-          </property>
-          <property name="default">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="signUpButton">
-          <property name="text">
-           <string>Create Account</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="statusLabel">
-          <property name="styleSheet">
-           <string notr="true">color: #ff6b6b;</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignmentFlag::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="heroImageLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777215</height>
-        </size>
+      <widget class="QLineEdit" name="emailEdit">
+       <property name="inputMask">
+        <string/>
        </property>
        <property name="text">
-        <string>TextLabel</string>
+        <string/>
        </property>
-       <property name="scaledContents">
+       <property name="placeholderText">
+        <string>example@example.com</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="passwordEdit">
+       <property name="echoMode">
+        <enum>QLineEdit::EchoMode::Password</enum>
+       </property>
+       <property name="placeholderText">
+        <string>Password</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="signInButton">
+       <property name="text">
+        <string>Sign In</string>
+       </property>
+       <property name="default">
         <bool>true</bool>
        </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="signUpButton">
+       <property name="text">
+        <string>Create Account</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="statusLabel">
+       <property name="styleSheet">
+        <string notr="true">color: #ff6b6b;</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+        <set>Qt::AlignmentFlag::AlignCenter</set>
        </property>
       </widget>
      </item>
