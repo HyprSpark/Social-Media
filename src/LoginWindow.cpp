@@ -7,6 +7,8 @@
 // -- Libraries --
 #include <QPushButton>
 #include <QPixmap>
+#include <QDebug>
+#include <QFile>
 
 static QPixmap coverPixmap(const QPixmap& src, const QSize& size)
 {
@@ -25,14 +27,34 @@ LoginWindow::LoginWindow(QWidget* parent)
    connect(ui.signUpButton, &QPushButton::clicked, // Switch function
        this, &LoginWindow::onSignUpClicked);
 
-    QPixmap px(":/resources/images/cheers.jpg"); // Load the image located in the Resource.qrc file
+    QPixmap px(":/resources/images/LoginBackground.png"); // Load the image located in the Resource.qrc file
+
+    if (px.isNull()) {
+        qDebug() << "ERROR: Pixmap is null!";
+
+        // Check if the file even exists in the resource system
+        if (QFile::exists(":/resources/images/LoginBackground.png")) {
+            qDebug() << "SUCCESS: File exists in resources, but QPixmap failed to load it (Format issue?)";
+        }
+        else {
+            qDebug() << "FAILURE: File does NOT exist at that path in the resource system.";
+        }
+    }
+    else {
+        qDebug() << "SUCCESS: Image loaded! Size:" << px.size();
+        ui.heroImageLabel->setScaledContents(true);
+        ui.heroImageLabel->setGeometry(0, 0, 1000, 600); // Align with window
+        qDebug() << "image size changed:" << px.size();
+        ui.heroImageLabel->lower(); // Send to back so it's a true background
+    }
     ui.heroImageLabel->setPixmap(px);
     
-    if (px.isNull()) { // If file is missing or corrupt show error message
-        ui.statusLabel->setText("Image not found (resource path wrong).");
+    
 
         
-    }
+
+        
+    
     
 }
 
