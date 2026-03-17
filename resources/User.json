@@ -1,27 +1,12 @@
 [
     {
-        "email": "email@test",
-        "password": "password",
-        "username": "testuser"
+        "email": "No Email",
+        "password": "",
+        "username": "Unknown"
     },
     {
-        "email": "dawid@.com",
+        "email": "admin@test.com",
         "password": "123456",
-        "username": "dad"
-    },
-    {
-        "email": "test@test.com",
-        "password": "123456",
-        "username": "testtest"
-    },
-    {
-        "email": "dw@.com",
-        "password": "dwd456",
-        "username": "dw"
-    },
-    {
-        "email": "daw@g.com",
-        "password": "daweeeee",
-        "username": "daw"
+        "username": "Admin"
     }
 ]
