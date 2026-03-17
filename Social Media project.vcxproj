@@ -56,6 +56,7 @@
     <ClInclude Include="include\userManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\OneDrive - University of Strathclyde\Year2\EE273\Project\Posts.json" />
     <None Include="README.md" />
     <None Include="resources\User.json" />
   </ItemGroup>
