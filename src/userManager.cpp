@@ -70,13 +70,14 @@ void UserManager::saveUser(const User& user)
 }
 
 // Checking if the user details match saved data
-bool UserManager::authenticate(const QString& email, const QString& password) // Phonebook style (Could change this in the future)
+bool UserManager::authenticate(const QString& email, const QString& password, User& outUser) // Phonebook style (Could change this in the future)
 {
     QVector<User> users = loadUsers();
 
     for (const User& user : users)
     {
         if (user.email == email && user.password == password) // If details match let through
+            outUser = user;
             return true;
     }
 

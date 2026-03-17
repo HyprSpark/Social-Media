@@ -16,7 +16,7 @@ public:
     static void saveUser(const User& user); 
 
     // Check if entered login data enetred matches saved data (returns true/false)
-    static bool authenticate(const QString& email, const QString& password); 
+    static bool authenticate(const QString& email, const QString& password, User& outUser); 
 
     static bool emailExists(const QString& email);
 

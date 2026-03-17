@@ -62,6 +62,8 @@ LoginWindow::~LoginWindow() {}
 
 void LoginWindow::onSignInClicked()
 {
+    User loggedInUser;
+
     QString email = ui.emailEdit->text();
     QString password = ui.passwordEdit->text();
 
@@ -71,9 +73,9 @@ void LoginWindow::onSignInClicked()
     }
 
     // Giving test data 
-    if (UserManager::authenticate(email, password)) {
+    if (UserManager::authenticate(email, password, loggedInUser)) {
 	
-		FeedWindow* feed = new FeedWindow(); // Creates a new instance of the FeedWindow class
+		FeedWindow* feed = new FeedWindow(loggedInUser); // Creates a new instance of the FeedWindow class
 
 		feed->setAttribute(Qt::WA_DeleteOnClose); // Ensures the feed window is deleted from memory when closed
 
