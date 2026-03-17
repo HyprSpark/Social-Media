@@ -7,14 +7,17 @@
 
 using namespace std;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
 
-	QApplication app(argc, argv); // Accessing and running Qt
+    QApplication app(argc, argv);
 
-	LoginWindow w; //Assigning LoginWindow as "w"
+    // Create the login window on the heap instead of the stack
+    LoginWindow* w = new LoginWindow();
 
-	w.show(); // Printing LoginWindow to user screen
+    // Tell Qt to safely delete it from memory when it closes
+    w->setAttribute(Qt::WA_DeleteOnClose);
 
-	return app.exec();
+    w->show();
 
+    return app.exec();
 }

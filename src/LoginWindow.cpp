@@ -75,13 +75,15 @@ void LoginWindow::onSignInClicked()
     // Giving test data 
     if (UserManager::authenticate(email, password, loggedInUser)) {
 	
-		FeedWindow* feed = new FeedWindow(loggedInUser); // Creates a new instance of the FeedWindow class
+		FeedWindow* feed = new FeedWindow(); // Creates a new instance of the FeedWindow class
+
+		feed->setActiveUser(loggedInUser); // Passes the logged-in user data to the feed window
 
 		feed->setAttribute(Qt::WA_DeleteOnClose); // Ensures the feed window is deleted from memory when closed
 
 		feed->show(); // Displays the feed window
-
-		this->close(); // Closes the login window
+  
+		this->hide(); // Closes the login window
     }
     else {
         ui.statusLabel->setText("Invalid email or password.");

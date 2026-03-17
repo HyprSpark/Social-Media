@@ -77,8 +77,10 @@ bool UserManager::authenticate(const QString& email, const QString& password, Us
     for (const User& user : users)
     {
         if (user.email == email && user.password == password) // If details match let through
+        {
             outUser = user;
             return true;
+        }
     }
 
     return false; // Block user and send message
