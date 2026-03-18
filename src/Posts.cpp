@@ -18,6 +18,7 @@ Posts::~Posts()
 
 void Posts::setPostData(const Content& data)
 {
+	currentData = data;
 	ui.btnUsername->setText(data.username);
 	ui.lblContent->setText(data.content);
 	ui.lblLikeCount->setText(QString::number(data.likes));
@@ -25,8 +26,8 @@ void Posts::setPostData(const Content& data)
 void Posts::onUsernameClicked()
 {
 	Profile* profile = new Profile(this);
-	profile->///loadUserProfile/// NOT CREATED YET, but will load the profile data based on the username passed in
-		(currentData.username);
+	//profile->///loadUserProfile/// NOT CREATED YET, but will load the profile data based on the username passed in
+		//(currentData.username);
 	profile->show(); // Displays the profile window
 	this->hide();   // hides feed while profile is open
 }

@@ -13,6 +13,7 @@ public:
 	~FeedWindow();
 
 	void setActiveUser(const User& user);
+	void loadPosts();
 
 private:
 	Ui::FeedWindowClass ui;
@@ -20,5 +21,6 @@ private:
 
 private slots:
 	void onMyProfileClicked();
+	void onSubmitPostClicked();
 };
 
