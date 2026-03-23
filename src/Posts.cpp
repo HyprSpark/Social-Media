@@ -2,6 +2,10 @@
 #include "Content.h"
 #include "Profile.h"
 #include <QPushButton>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 
 Posts::Posts(QWidget* parent)
 	: QWidget(parent)
@@ -26,14 +30,43 @@ void Posts::setPostData(const Content& data)
 void Posts::onUsernameClicked()
 {
 	Profile* profile = new Profile(this);
-	//profile->///loadUserProfile/// NOT CREATED YET, but will load the profile data based on the username passed in
-		//(currentData.username);
+	User clickedUser;
+	clickedUser.username = currentData.username;
+	profile->setActiveUser(clickedUser);
 	profile->show(); // Displays the profile window
-	this->hide();   // hides feed while profile is open
 }
 void Posts::onLikeClicked()
 {
+	if (hasLiked) {
+		return; // Prevent multiple likes
+	}
+
 	currentData.likes++;
 	ui.lblLikeCount->setText(QString::number(currentData.likes));
+	ui.btnLike->setEnabled(false); // Disable the like button after liking
+	hasLiked = true;
+
+	QFile file("resources/posts.json");
+
+	if (file.open(QIODevice::ReadOnly)) {
+		QByteArray data = file.readAll();
+		file.close();
+		QJsonDocument doc = QJsonDocument::fromJson(data);
+		QJsonArray postsArray = doc.array();
+		for (int i = 0; i < postsArray.size(); ++i) {
+			QJsonObject obj = postsArray[i].toObject();
+			if (obj["username"].toString() == currentData.username && obj["content"].toString() == currentData.content) {
+				obj["likes"] = currentData.likes; // Update the like count
+				postsArray[i] = obj; // Update the array with the modified object
+				break;
+			}
+		}
+		if (file.open(QIODevice::WriteOnly)) {
+			QJsonDocument updatedDoc(postsArray);
+			file.write(updatedDoc.toJson());
+			file.close();
+		}
+	}
+
 }
 

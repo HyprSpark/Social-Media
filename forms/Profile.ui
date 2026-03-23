@@ -99,7 +99,7 @@
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents">
+         <widget class="QWidget" name="scrollProfilePosts">
           <property name="geometry">
            <rect>
             <x>0</x>
@@ -108,15 +108,7 @@
             <height>448</height>
            </rect>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <widget class="QLabel" name="label_2">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <layout class="QVBoxLayout" name="verticalLayout_3"/>
          </widget>
         </widget>
        </item>

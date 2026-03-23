@@ -19,5 +19,6 @@ private:
 
 private slots:
 	void onReturnClicked();
+	void loadUserPosts();
 };
 

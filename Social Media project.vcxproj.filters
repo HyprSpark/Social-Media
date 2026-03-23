@@ -103,5 +103,8 @@
     <None Include="resources\User.json">
       <Filter>resources</Filter>
     </None>
+    <None Include="resources\posts.json">
+      <Filter>resources</Filter>
+    </None>
   </ItemGroup>
 </Project>
