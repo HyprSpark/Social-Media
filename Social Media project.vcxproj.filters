@@ -36,6 +36,9 @@
     <QtMoc Include="include\Profile.h">
       <Filter>include</Filter>
     </QtMoc>
+    <QtMoc Include="Messages.h">
+      <Filter>include</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="forms\LoginWindow.ui">
@@ -54,6 +57,12 @@
       <Filter>forms</Filter>
     </QtUic>
     <QtUic Include="forms\Profile.ui">
+      <Filter>forms</Filter>
+    </QtUic>
+    <QtUic Include="Widget.ui">
+      <Filter>forms</Filter>
+    </QtUic>
+    <QtUic Include="Messages.ui">
       <Filter>forms</Filter>
     </QtUic>
   </ItemGroup>
@@ -77,6 +86,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Profile.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Messages.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -104,6 +116,9 @@
       <Filter>resources</Filter>
     </None>
     <None Include="resources\posts.json">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="messages.json">
       <Filter>resources</Filter>
     </None>
   </ItemGroup>

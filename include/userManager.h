@@ -21,4 +21,6 @@ public:
     static bool emailExists(const QString& email);
 
     static bool isUnique(const QString& username, const QString& email);
+
+    static bool userExists(const QString& username);
 };

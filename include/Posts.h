@@ -12,15 +12,17 @@ public:
 	Posts(QWidget* parent = nullptr);
 	~Posts();
 
-	void setPostData(const Content& data);
+	void setPostData(const Content& data, const QString& currentLoggedInUser);
 
 private:
 	Ui::PostsClass ui;
 	Content currentData;
-	bool hasLiked = false; // To prevent multiple likes from the same user
+	QString currentUser;
+	bool isLiked = false;
 
 private slots:
 	void onUsernameClicked();
 	void onLikeClicked();
+	void onDeleteClicked();
 };
 

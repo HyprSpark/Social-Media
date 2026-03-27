@@ -111,3 +111,19 @@ bool UserManager::isUnique(const QString& username, const QString& email)
     }
     return true;
 }
+
+bool UserManager::userExists(const QString& username)
+{
+    // 1. Load the current list of users
+    QVector<User> users = loadUsers();
+
+    // 2. Loop through the users to see if there's a match
+    for (const User& u : users) {
+        if (u.getUsername() == username) {
+            return true; // Found the user!
+        }
+    }
+
+    // 3. If the loop finishes without finding a match, the user doesn't exist
+    return false;
+}

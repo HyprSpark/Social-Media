@@ -36,4 +36,9 @@ public:
             obj["password"].toString("")
         );
     }
+
+    QString getUsername() const {
+        return username;
+    }
+
 };

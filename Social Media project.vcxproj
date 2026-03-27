@@ -31,9 +31,12 @@
     <QtUic Include="forms\Posts.ui" />
     <QtUic Include="forms\Profile.ui" />
     <QtUic Include="forms\SignUpWindow.ui" />
+    <QtUic Include="Messages.ui" />
+    <QtUic Include="Widget.ui" />
   </ItemGroup>
   <!-- CPP FILES -->
   <ItemGroup>
+    <ClCompile Include="Messages.cpp" />
     <ClCompile Include="src\FeedWindow.cpp" />
     <ClCompile Include="src\LoginWindow.cpp" />
     <ClCompile Include="src\Posts.cpp" />
@@ -48,6 +51,7 @@
   </ItemGroup>
   <!-- HEADERS -->
   <ItemGroup>
+    <QtMoc Include="Messages.h" />
     <QtMoc Include="include\FeedWindow.h" />
     <ClInclude Include="include\Content.h" />
     <ClInclude Include="include\models\User.h" />
@@ -56,6 +60,7 @@
     <ClInclude Include="include\userManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="messages.json" />
     <None Include="README.md" />
     <None Include="resources\posts.json" />
     <None Include="resources\User.json" />
@@ -88,7 +93,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">

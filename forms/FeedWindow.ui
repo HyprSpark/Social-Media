@@ -56,7 +56,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="btnMessages">
          <property name="text">
           <string>Messages</string>
          </property>
@@ -74,6 +74,20 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnSignOut">
+         <property name="text">
+          <string>Sign Out</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnQuit">
+         <property name="text">
+          <string>Quit</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
