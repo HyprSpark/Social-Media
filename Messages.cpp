@@ -1,3 +1,4 @@
+// -- Header -- //
 #include "Messages.h"
 #include "userManager.h"
 #include <QMessageBox>
@@ -8,11 +9,16 @@
 #include <QDateTime>
 #include <QCoreApplication>
 
+/**
+* @brief This window allows users to access messages
+* Users can send messages to other users, read their inbox, and clear their inbox.
+*/
 Messages::Messages(QWidget* parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
 
+	// -- Button Connections -- //
     connect(ui.btnReturn, &QPushButton::clicked, this, &Messages::onReturnClicked);
     connect(ui.btnSend, &QPushButton::clicked, this, &Messages::onSendClicked);
     connect(ui.btnRead, &QPushButton::clicked, this, &Messages::onReadClicked);
@@ -22,6 +28,11 @@ Messages::Messages(QWidget* parent)
 Messages::~Messages()
 {
 }
+
+/**
+* @brief Sets the active user for the messages window.
+* This is used to identify who is sending and recieving messages,
+*/
 
 void Messages::setActiveUser(const User& user)
 {
@@ -53,11 +64,20 @@ void Messages::setActiveUser(const User& user)
     ui.msgCountlbl->setText(QString::number(messageCount) + " new messages");
 }
 
+/**
+* @brief Handles the Return button click.
+* Prevents the user from having to close the window manually.
+*/
 void Messages::onReturnClicked()
 {
-    // Closes the messages window, returning the user to the FeedWindow
     this->close();
 }
+
+/**
+* @brief Handles the Send button click.
+* Checks if the recipient exists before saving the message to a JSON file.
+* When the target user clicks "Read", they will only see messages where they are the recipient.
+*/
 
 void Messages::onSendClicked()
 {
@@ -72,7 +92,7 @@ void Messages::onSendClicked()
 
     qDebug() << "LOG [Step 1]: Validation passed. Checking if user exists...";
 
-    // 2. The "Sender Tester"
+    // 2. Test if the recipient exists.
     if (!UserManager::userExists(recipient)) {
         QMessageBox::critical(this, "User Not Found",
             "The user '" + recipient + "' does not exist. Please check the spelling.");
@@ -136,6 +156,12 @@ void Messages::onSendClicked()
     QMessageBox::information(this, "Sent", "Message delivered to " + recipient);
 }
 
+/**
+* @brief Handles the Read button click.
+* Shows all messages in the inbox that are meant for the current user.
+* Shows an alert if the inbox is empty.
+*/
+
 void Messages::onReadClicked()
 {
     qDebug() << "LOG: Checking for messages for user:" << currentUser.getUsername();
@@ -191,11 +217,14 @@ void Messages::onReadClicked()
     else {
         // Show all messages in a popup
         QMessageBox::information(this, "Your Inbox", inboxText);
-
-        // TODO: If you have a specific text area in your UI, you can send the text there!
-        // Example: ui.myMessageDisplayArea->setText(inboxText);
     }
 }
+
+/**
+* @brief Handles the Clear Inbox button click.
+* Loops through the array only copying messages that don't belong to the user, then saves this new array back to the file.
+* This way we don't accidentally delete messages meant for other users who share the same database file.
+*/
 
 void Messages::onClearInboxClicked()
 {
@@ -226,12 +255,10 @@ void Messages::onClearInboxClicked()
 
         // 3. Filter: Does this message belong to the current user?
         if (msgObj["recipient"].toString() == currentUser.getUsername()) {
-            // It belongs to the user, so we SKIP adding it to the new array.
-            messagesDeleted = true;
+            messagesDeleted = true; // skip this message
         }
         else {
-            // It belongs to someone else, so we KEEP it.
-            updatedArray.append(msgObj);
+            updatedArray.append(msgObj); // add this message
         }
     }
 

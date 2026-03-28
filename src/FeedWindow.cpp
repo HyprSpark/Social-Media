@@ -4,7 +4,7 @@
 #include "Content.h" 
 #include "Messages.h"
 #include "LoginWindow.h"
-
+#include "userManager.h"
 #include <QApplication> 
 #include <QPushButton>
 #include <QString>
@@ -13,73 +13,76 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QDateTime>
+#include <QShowEvent>
 
+/**
+ * @brief Constructor: Sets up the main dashboard and UI layout.
+ */
 FeedWindow::FeedWindow(QWidget* parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
 
+    // --- Layout Setup --- //
+    // Fetches the existing layout from the scroll area or creates one if missing.
     QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(ui.scrollPosts->layout());
-
     if (!layout) {
         layout = new QVBoxLayout(ui.scrollPosts);
     }
     layout->setAlignment(Qt::AlignTop);
 
+    // --- Button Connections --- //
     connect(ui.btnMyProfile, &QPushButton::clicked, this, &FeedWindow::onMyProfileClicked);
     connect(ui.btnSubmitPost, &QPushButton::clicked, this, &FeedWindow::onSubmitPostClicked);
     connect(ui.btnQuit, &QPushButton::clicked, this, &FeedWindow::onQuitClicked);
     connect(ui.btnSignOut, &QPushButton::clicked, this, &FeedWindow::onSignOutClicked);
-
-    // Wires the UI button to the new secure messaging protocol
     connect(ui.btnMessages, &QPushButton::clicked, this, &FeedWindow::onMessagesClicked);
-
-    
 }
 
 FeedWindow::~FeedWindow() {}
 
+/**
+ * @brief Sets the active user and triggers the initial post load.
+ */
 void FeedWindow::setActiveUser(const User& user) {
     currentUser = user;
-
     loadPosts();
 }
 
+/**
+ * @brief Opens the Profile window.
+ * Passes the currentUser twice: once as the owner and once as the viewer.
+ */
 void FeedWindow::onMyProfileClicked() {
+    // Before opening the profile, re-load the users to ensure we have the latest friend list
+    QVector<User> allUsers = UserManager::loadUsers();
+    for (const User& u : allUsers) {
+        if (u.username == currentUser.username) {
+            currentUser = u; // Sync the local object with the database
+            break;
+        }
+    }
+
     Profile* profile = new Profile();
-    profile->setActiveUser(currentUser);
-    profile->setAttribute(Qt::WA_DeleteOnClose); // the window is deleted when closed
+    profile->setActiveUser(currentUser, currentUser);
+    profile->setAttribute(Qt::WA_DeleteOnClose);
     profile->show();
 }
 
-void FeedWindow::onMessagesClicked() {
-    if (messagesWindow == nullptr) {
-        messagesWindow = new Messages(this);
-        messagesWindow->setActiveUser(currentUser);
-    }
-
-    messagesWindow->show();
-    messagesWindow->raise();
-    messagesWindow->activateWindow();
-
-    // Pass the active user's identity matrix so the comms channel knows who is sending the message
-
-    
-
-}
-
+/**
+ * @brief Logic for creating and saving a new post.
+ */
 void FeedWindow::onSubmitPostClicked() {
     QString contentText = ui.newTextPost->toPlainText().trimmed();
     if (contentText.isEmpty()) return;
 
-    // 1. Generate the timestamp
     QString currentTime = QDateTime::currentDateTime().toString("MMM dd, HH:mm");
 
-    // 2. Create the Content object (Make sure there is NO "Content data;" line above this!)
-    // This one line replaces all the individual assignments
+    // Create the data object
     Content postData(currentUser.username, contentText, QStringList(), currentTime);
 
-    // 3. Save to JSON (Using the new timestamp)
+    // Save to JSON
     QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/posts.json";
     QFile file(filePath);
     QJsonArray postsArray;
@@ -89,7 +92,6 @@ void FeedWindow::onSubmitPostClicked() {
         file.close();
     }
 
-    // Use our new postData object to fill the JSON
     postsArray.prepend(postData.toJson());
 
     if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
@@ -97,74 +99,81 @@ void FeedWindow::onSubmitPostClicked() {
         file.close();
     }
 
-    // 4. Update the UI
+    // Refresh UI by adding the new post to the top
     Posts* postWidget = new Posts(this);
     postWidget->setPostData(postData, currentUser.username);
 
-    // Insert at the top of the layout
     QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(ui.scrollPosts->layout());
     if (layout) layout->insertWidget(0, postWidget);
 
     ui.newTextPost->clear();
 }
 
+/**
+ * @brief Reads the post database and populates the scroll area.
+ */
 void FeedWindow::loadPosts() {
-    // 1. Use the SAME path as the delete function
-    QString filePath = QCoreApplication::applicationDirPath() + "/posts.json";
+    QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/posts.json";
     QFile file(filePath);
 
-    // 2. If the file doesn't exist in Debug yet, let's try to grab the "default" one
+    // Fallback for Debug mode
     if (!file.exists()) {
-        qDebug() << "LOG: posts.json not in Debug, falling back to resources...";
         file.setFileName("resources/posts.json");
     }
 
     if (!file.open(QIODevice::ReadOnly)) {
-        qDebug() << "ERROR: Could not find any posts.json to load!";
         return;
     }
 
-    QByteArray data = file.readAll();
+    QJsonArray postsArray = QJsonDocument::fromJson(file.readAll()).array();
     file.close();
 
-    QJsonDocument doc = QJsonDocument::fromJson(data);
-    QJsonArray postsArray = doc.array();
-
-    // Clear existing posts so we don't double up
+    // Clear existing widgets to prevent "doubling up"
     QLayoutItem* item;
-    while ((item = ui.scrollPosts->layout()->takeAt(0)) != nullptr) {
-        delete item->widget();
+    while (ui.scrollPosts->layout() && (item = ui.scrollPosts->layout()->takeAt(0)) != nullptr) {
+        if (item->widget()) delete item->widget();
         delete item;
     }
 
+    // Build the feed
     for (const QJsonValue& value : postsArray) {
         QJsonObject obj = value.toObject();
-        Content postData;
-        postData.username = obj["username"].toString();
-        postData.content = obj["content"].toString();
-        postData.likedBy = obj["likedBy"].toVariant().toStringList();
+
+        // Use the static fromJson method from Content class
+        Content postData = Content::fromJson(obj);
 
         Posts* postWidget = new Posts(this);
-        // Pass the user so the delete button knows to show up
+        // Ensure the post widget knows who is currently viewing the feed
         postWidget->setPostData(postData, currentUser.username);
 
         ui.scrollPosts->layout()->addWidget(postWidget);
     }
 }
 
-void FeedWindow::onQuitClicked()
-{
-    // This safely and immediately shuts down the entire application
+void FeedWindow::onMessagesClicked() {
+    if (messagesWindow == nullptr) {
+        messagesWindow = new Messages(this);
+        messagesWindow->setActiveUser(currentUser);
+    }
+    messagesWindow->show();
+    messagesWindow->raise();
+    messagesWindow->activateWindow();
+}
+
+void FeedWindow::onQuitClicked() {
     QApplication::quit();
 }
 
-void FeedWindow::onSignOutClicked()
-{
-    // 1. Create a fresh Login Window
+void FeedWindow::onSignOutClicked() {
     LoginWindow* login = new LoginWindow();
-    login->setAttribute(Qt::WA_DeleteOnClose); // Clean up memory when closed
+    login->setAttribute(Qt::WA_DeleteOnClose);
     login->show();
-
-    // 2. Close the Feed Window
     this->close();
+}
+
+void FeedWindow::showEvent(QShowEvent* event) {
+    QMainWindow::showEvent(event); // Call the base class logic first
+
+    qDebug() << "LOG: FeedWindow reappeared. Refreshing posts for sync...";
+    loadPosts(); // This pulls the fresh 'likedBy' lists from the JSON
 }

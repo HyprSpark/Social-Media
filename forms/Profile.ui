@@ -31,7 +31,7 @@
      <widget class="QWidget" name="widget" native="true">
       <property name="minimumSize">
        <size>
-        <width>100</width>
+        <width>120</width>
         <height>500</height>
        </size>
       </property>
@@ -85,14 +85,52 @@
             </size>
            </property>
            <property name="text">
-            <string>TextLabel</string>
+            <string>Profile Pic</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QLabel" name="lblUsername">
            <property name="text">
-            <string>TextLabel</string>
+            <string>Username</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblFriendCount">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>25</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>25</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Friend count</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnFriend">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Add Friend</string>
            </property>
           </widget>
          </item>

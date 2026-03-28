@@ -1,21 +1,25 @@
 // -- Headers --
 #include "UserManager.h"
-
-// -- Libraries --
 #include <QFile>
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonArray>
 
-// - Accessing the file and loading user details (returns empty if file not found)
+/**
+* @brief Loads the user data from a JSON file and returns a list of User objects.
+* opens the file, checks if it exists, and parses the JSON content to create User instances.
+*/
+
 QVector<User> UserManager::loadUsers()
 {
     QVector<User> users;
 
     QFile file("resources/User.json");
+
+    // Fallback mechanism: If the file doesn't exist in the expected location try to load from resources
     if (!file.exists()) {
         qDebug() << "LOG: Local users.json not found, trying resource...";
-        file.setFileName(":/resources/User.json"); // match the resource file shipped in project
+        file.setFileName(":/resources/User.json");
     }
 
     if (!file.open(QIODevice::ReadOnly)) {
@@ -27,12 +31,14 @@ QVector<User> UserManager::loadUsers()
     const QByteArray data = file.readAll();
     file.close();
 
+	// -- Parse the JSON data --
     QJsonParseError parseError;
     const QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
     if (parseError.error != QJsonParseError::NoError) {
         qDebug() << "ERROR: JSON parse failed:" << parseError.errorString();
         return users;
     }
+
     if (!doc.isArray()) {
         qDebug() << "ERROR: JSON document is not an array.";
         return users;
@@ -45,18 +51,23 @@ QVector<User> UserManager::loadUsers()
     return users;
 }
 
-// - Adding users to the user file to allow for logging in
+/**
+* @brief saves a new user to the JSON file.
+* It first loads the existing users to prevent overwriting, appends the new user, and then writes the entire list back to the file.
+*/
 void UserManager::saveUser(const User& user) 
 {
-    // Load user list and add new entry 
-    QVector<User> users = loadUsers(); // This prevent data from being overwrote
-
+	// 1. Load existing users to prevent overwriting
+    QVector<User> users = loadUsers(); 
     users.append(user);
 
+	// 2. Convert the list of users to a JSON array
     QJsonArray array;
-    for (const auto& u : users)
+    for (const auto& u : users) {
         array.append(u.toJson());
+    }
 
+	// 3. Write the JSON array back to the file
     QFile file("resources/User.json");
     if (!file.open(QIODevice::WriteOnly)) {
         qDebug() << "ERROR: Could not open file for writing:" << file.errorString();
@@ -69,22 +80,30 @@ void UserManager::saveUser(const User& user)
     qDebug() << "SUCCESS: Saved new user. Total users now:" << users.size();
 }
 
-// Checking if the user details match saved data
-bool UserManager::authenticate(const QString& email, const QString& password, User& outUser) // Phonebook style (Could change this in the future)
+/**
+* @brief Authenticates a user by checking the provided email and password against the stored user data.
+*/
+
+
+bool UserManager::authenticate(const QString& email, const QString& password, User& outUser)
 {
     QVector<User> users = loadUsers();
 
     for (const User& user : users)
     {
-        if (user.email == email && user.password == password) // If details match let through
+        if (user.email == email && user.password == password)
         {
             outUser = user;
             return true;
         }
     }
 
-    return false; // Block user and send message
+	return false; // Access denied if no match is found
 }
+
+/**
+* @brief Checks if the provided email already exists in the user database.
+*/
 
 bool UserManager::emailExists(const QString& email)
 {
@@ -94,8 +113,12 @@ bool UserManager::emailExists(const QString& email)
             return true;
         }
     }
-    return false;
+	return false; // No match found, email is available
 }
+
+/**
+* @brief Checks if both the username and email are unique in the user database.
+*/
 
 bool UserManager::isUnique(const QString& username, const QString& email)
 {
@@ -109,8 +132,12 @@ bool UserManager::isUnique(const QString& username, const QString& email)
             return false;
         }
     }
-    return true;
+	return true; // Both username and email are unique
 }
+
+/**
+* @brief Checks if a user with the given username exists in the user database.
+*/
 
 bool UserManager::userExists(const QString& username)
 {
@@ -126,4 +153,37 @@ bool UserManager::userExists(const QString& username)
 
     // 3. If the loop finishes without finding a match, the user doesn't exist
     return false;
+}
+
+/**
+ * @brief Toggles the friendship status between two users.
+ * If they are friends, it removes them. If not, it adds them.
+ */
+
+void UserManager::toggleFriend(const QString& currentUsername, const QString& targetUsername) {
+    QVector<User> users = loadUsers();
+    bool changed = false;
+
+    for (User& u : users) {
+        if (u.username == currentUsername) {
+            if (u.friends.contains(targetUsername)) {
+                u.friends.removeAll(targetUsername); // Unfriend logic
+            }
+            else {
+                u.friends.append(targetUsername);    // Friend logic
+            }
+            changed = true;
+            break;
+        }
+    }
+
+    if (changed) {
+        QFile file("resources/User.json");
+        if (file.open(QIODevice::WriteOnly)) {
+            QJsonArray arr;
+            for (const auto& u : users) arr.append(u.toJson());
+            file.write(QJsonDocument(arr).toJson());
+            file.close();
+        }
+    }
 }

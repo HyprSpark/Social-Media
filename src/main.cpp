@@ -1,23 +1,18 @@
-// -- Libraries --
-#include <iostream>
+// -- Header -- //
 #include <QApplication>
-
-// -- Headers --
+#include <QFile>
+#include <QDebug>
 #include "LoginWindow.h"
-
-using namespace std;
 
 int main(int argc, char* argv[]) {
 
-    QApplication app(argc, argv);
+    QApplication app(argc, argv); // Initializes the Qt application.
 
-    // Create the login window on the heap instead of the stack
-    LoginWindow* w = new LoginWindow();
+    LoginWindow* w = new LoginWindow(); // Creates a new instance of the LoginWindow class.
 
-    // Tell Qt to safely delete it from memory when it closes
-    w->setAttribute(Qt::WA_DeleteOnClose);
+    w->setAttribute(Qt::WA_DeleteOnClose); // Ensures that the LoginWindow instance is deleted from memory when it is closed.
 
-    w->show();
+    w->show(); // Displays the LoginWindow on the screen.
 
-    return app.exec();
+    return app.exec(); // Enters the main event loop of the application.
 }

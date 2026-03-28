@@ -1,8 +1,14 @@
 #pragma once
 
-#include "models/User.h"
+// -- Header -- //
 #include <QMainWindow>
-#include "ui_Messages.h"
+#include "ui_Messages.h" // Pointer to the visual elements for QT
+#include "models/User.h"
+
+/**
+* @brief The message class handles the private messaging interface.
+* It allows users to read, send, and manage their inbox.
+*/
 
 class Messages : public QMainWindow
 {
@@ -12,17 +18,22 @@ public:
 	Messages(QWidget* parent = nullptr);
 	~Messages();
 
-	// This allows FeedWindow to pass the logged-in user to this screen
+	/**
+	* @brief Recieves the User object from the feedWindow.
+	* @param user the currently authenticated user.
+	* This is used to identify the user trying to send or receive messages.
+	*/
 	void setActiveUser(const User& user);
 
 private:
 	Ui::MessagesClass ui;
 	User currentUser;
-	Messages* messagesWindow = nullptr;
 
 private slots:
-	void onSendClicked();
-	void onReturnClicked();
-	void onReadClicked();
-	void onClearInboxClicked();
+	// -- UI Button Functions -- //
+
+	void onSendClicked(); // Captures text entered from input and sends it to the intended recipient if they exist.
+	void onReturnClicked(); // Returns to the feed window without closing the application.
+	void onReadClicked(); // Reads the most recent message from the inbox and displays it.
+	void onClearInboxClicked(); // Clears the inbox of the user, deleting all messages permanently.
 };

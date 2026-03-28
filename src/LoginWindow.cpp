@@ -4,15 +4,18 @@
 #include "FeedWindow.h"
 #include "userManager.h"
 
-// -- Libraries --
 #include <QPushButton>
 #include <QPixmap>
 #include <QDebug>
 #include <QFile>
 
+/**
+* @brief Helper function to scale images for the login background
+* This ensures the image fills the window without distortion
+*/
 static QPixmap coverPixmap(const QPixmap& src, const QSize& size)
 {
-    return src.scaled(size, Qt::KeepAspectRatioByExpanding,
+    return src.scaled(size, Qt::KeepAspectRatioByExpanding, 
         Qt::SmoothTransformation);
 }
 
@@ -20,22 +23,26 @@ LoginWindow::LoginWindow(QWidget* parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
+    
+	// -- Button Connections -- //
+   connect(ui.signInButton, &QPushButton::clicked, 
+       this, &LoginWindow::onSignInClicked);
 
-   connect(ui.signInButton, &QPushButton::clicked, // login function
-        this, &LoginWindow::onSignInClicked);
-
-   connect(ui.signUpButton, &QPushButton::clicked, // Switch function
+   connect(ui.signUpButton, &QPushButton::clicked,
        this, &LoginWindow::onSignUpClicked);
 
-    QPixmap px(":/resources/images/LoginBackground.png"); // Load the image located in the Resource.qrc file
+   // -- Load and Set Background Image -- //
+   // Using the Qt Resource System to load the image.
+    QPixmap px(":/resources/images/LoginBackground.png");
 
     if (px.isNull()) {
         qDebug() << "ERROR: Pixmap is null!";
 
-        // Check if the file even exists in the resource system
+        // This check confirms whether the file is actually present in the resource system.
         if (QFile::exists(":/resources/images/LoginBackground.png")) {
             qDebug() << "SUCCESS: File exists in resources, but QPixmap failed to load it (Format issue?)";
-        }
+        } 
+
         else {
             qDebug() << "FAILURE: File does NOT exist at that path in the resource system.";
         }
@@ -48,18 +55,22 @@ LoginWindow::LoginWindow(QWidget* parent)
         ui.heroImageLabel->lower(); // Send to back so it's a true background
     }
     ui.heroImageLabel->setPixmap(px);
-    
-    
 
-        
-
-        
-    
-    
 }
+
+/**
+* @brief This is the initial login window the user will see when they start the program
+* It allows the user to enter their email and password to sign in.
+* Connects the sign up window for users who don't have an account yet, allowing them to create one.
+*/
 
 LoginWindow::~LoginWindow() {}
 
+
+/**
+* @brief Handles the Sign In button click.
+* Checks inputs, validates credentials, and transitions to the Feed.
+*/
 void LoginWindow::onSignInClicked()
 {
     User loggedInUser;
@@ -67,32 +78,36 @@ void LoginWindow::onSignInClicked()
     QString email = ui.emailEdit->text();
     QString password = ui.passwordEdit->text();
 
+	// Basic validation, prevents processing empty fields.
     if (email.isEmpty() || password.isEmpty()) {
         ui.statusLabel->setText("Enter email and password.");
         return;
     }
 
-    // Giving test data 
+    // Compare data with the user manager.
     if (UserManager::authenticate(email, password, loggedInUser)) {
-	
-		FeedWindow* feed = new FeedWindow(); // Creates a new instance of the FeedWindow class
-
-		feed->setActiveUser(loggedInUser); // Passes the logged-in user data to the feed window
-
-		feed->setAttribute(Qt::WA_DeleteOnClose); // Ensures the feed window is deleted from memory when closed
-
-		feed->show(); // Displays the feed window
-  
+	    
+		// Pass the user data to the feed window so it can display the correct info and posts.
+		FeedWindow* feed = new FeedWindow();
+		feed->setActiveUser(loggedInUser);
+		feed->setAttribute(Qt::WA_DeleteOnClose);
+		feed->show();
 		this->hide(); // Closes the login window
     }
+
     else {
+		// If authentication fails, show an error message.
         ui.statusLabel->setText("Invalid email or password.");
     }
 }
-// - Switching to the Sign Up page when the user chooses create account
+
+/**
+* @brief Handles the Sign Up button click.
+*/
+
 void LoginWindow::onSignUpClicked()
 {
     SignUpWindow* signup = new SignUpWindow(this);
-    signup->show(); // Displays the signup window
+    signup->show();
     this->hide();   // hides login while signup is open
 }

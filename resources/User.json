@@ -1,22 +1,17 @@
 [
     {
-        "email": "No Email",
-        "password": "",
-        "username": "Unknown"
-    },
-    {
         "email": "admin@test.com",
+        "friends": [
+            "alex"
+        ],
         "password": "123456",
-        "username": "Admin"
+        "username": "admin"
     },
     {
         "email": "alex@uni.com",
+        "friends": [
+        ],
         "password": "alex123",
         "username": "alex"
-    },
-    {
-        "email": "test@test.com",
-        "password": "123456",
-        "username": "albert"
     }
 ]

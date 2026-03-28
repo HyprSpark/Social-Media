@@ -1,102 +1,128 @@
 #include "Profile.h"
 #include "FeedWindow.h"
 #include "Posts.h"
-#include <QWidget>
+#include "UserManager.h"
+#include <QMessageBox>
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QVBoxLayout>
 
-Profile::Profile(QWidget* parent)
-	: QMainWindow(parent)
-{
-	ui.setupUi(this);
+Profile::Profile(QWidget* parent) : QMainWindow(parent) {
+    ui.setupUi(this);
+    QVBoxLayout* layout = new QVBoxLayout(ui.scrollProfilePosts);
+    layout->setAlignment(Qt::AlignTop);
 
-	QVBoxLayout* layout = new QVBoxLayout(ui.scrollProfilePosts);
-	layout->setAlignment(Qt::AlignTop);
-
-	connect(ui.btnToFeed, &QPushButton::clicked,
-		this, &Profile::onReturnClicked);
-
+    connect(ui.btnToFeed, &QPushButton::clicked, this, &Profile::onReturnClicked);
+    connect(ui.btnFriend, &QPushButton::clicked, this, &Profile::onFriendClicked);
 }
 
-Profile::~Profile()
-{}
+Profile::~Profile() {}
 
-void Profile::setActiveUser(const User& user) {
-    currentUser = user;
-    ui.lblUsername->setText(currentUser.username);
+void Profile::setActiveUser(const User& user, const User& viewer) {
+    viewedUser = user;     // The profile owner
+    loggedInUser = viewer; // The person viewing
 
-    // --- The Visual Sync for Header Avatar ---
-    // Synchronizing with the path used in the Posts widget
+    ui.lblUsername->setText(viewedUser.username);
+
+    // Profile Image Logic
     QPixmap avatar(":resources/images/profile.png");
-
-    if (avatar.isNull()) {
-        qDebug() << "ERROR: Profile Avatar image not found!";
-        ui.lblProfilePic->setText("?");
-        ui.lblProfilePic->setAlignment(Qt::AlignCenter);
-    }
-    else {
-        // Matching the smooth scaling and 80x80 size we planned earlier
+    if (!avatar.isNull()) {
         ui.lblProfilePic->setPixmap(avatar.scaled(80, 80, Qt::KeepAspectRatio, Qt::SmoothTransformation));
         ui.lblProfilePic->setFixedSize(80, 80);
         ui.lblProfilePic->setAlignment(Qt::AlignCenter);
         ui.lblProfilePic->setStyleSheet("background: transparent; border: 1px solid #555;");
     }
+    else {
+        ui.lblProfilePic->setText("?");
+        ui.lblProfilePic->setAlignment(Qt::AlignCenter);
+    }
 
+    // Load the owner's posts
     loadUserPosts();
+
+    // Check relationship status
+    isAlreadyFriends = loggedInUser.friends.contains(viewedUser.username);
+
+    if (viewedUser.username == loggedInUser.username) {
+        ui.btnFriend->setVisible(false);
+    }
+    else {
+        ui.btnFriend->setVisible(true);
+        ui.btnFriend->setText(isAlreadyFriends ? "Unfriend" : "Add Friend");
+        ui.btnFriend->setStyleSheet(isAlreadyFriends ? "background-color: #444; color: white;" : "background-color: #0078d4; color: white;");
+    }
+    ui.lblFriendCount->setText(QString::number(viewedUser.friends.size()) + " Friends");
 }
 
 void Profile::onReturnClicked() {
-	this->hide(); 
+    this->hide();
+}
+
+void Profile::onFriendClicked() {
+    // 1. Update the Permanent JSON Database
+    UserManager::toggleFriend(loggedInUser.username, viewedUser.username);
+
+    // 2. Flip the UI state
+    isAlreadyFriends = !isAlreadyFriends;
+
+    // 3. IMPORTANT: Update the C++ object in memory
+    if (isAlreadyFriends) {
+        if (!loggedInUser.friends.contains(viewedUser.username)) {
+            loggedInUser.friends.append(viewedUser.username);
+        }
+        ui.btnFriend->setText("Unfriend");
+        ui.btnFriend->setStyleSheet("background-color: #444; color: white;");
+    }
+    else {
+        loggedInUser.friends.removeAll(viewedUser.username);
+        ui.btnFriend->setText("Add Friend");
+        ui.btnFriend->setStyleSheet("background-color: #0078d4; color: white;");
+    }
+
+    // 4. Update the Friend Count label visually (Optional but looks better)
+    int currentCount = viewedUser.friends.size();
+    ui.lblFriendCount->setText(QString::number(isAlreadyFriends ? currentCount + 1 : currentCount) + " Friends");
 }
 
 void Profile::loadUserPosts() {
-    // Addressing the QLayout warning: Use the existing layout instead of creating a new one
     QLayout* layout = ui.scrollProfilePosts->layout();
 
-    // Clear the layout carefully
     if (layout) {
         QLayoutItem* item;
         while ((item = layout->takeAt(0)) != nullptr) {
-            if (item->widget()) {
-                delete item->widget();
-            }
+            if (item->widget()) delete item->widget();
             delete item;
         }
     }
     else {
-        // If no layout exists in the UI file, only then create one
         layout = new QVBoxLayout(ui.scrollProfilePosts);
         layout->setAlignment(Qt::AlignTop);
     }
 
     QFile file("resources/posts.json");
     if (file.open(QIODevice::ReadOnly)) {
-        QByteArray data = file.readAll();
+        QJsonArray postsArray = QJsonDocument::fromJson(file.readAll()).array();
         file.close();
-        QJsonDocument doc = QJsonDocument::fromJson(data);
-        QJsonArray postsArray = doc.array();
 
         for (const QJsonValue& value : postsArray) {
             QJsonObject obj = value.toObject();
-            if (obj["username"].toString() == currentUser.username) {
+            if (obj["username"].toString() == viewedUser.username) {
                 Content postData;
                 postData.username = obj["username"].toString();
                 postData.content = obj["content"].toString();
+                postData.timestamp = obj["timestamp"].toString(); // Don't forget timestamp!
 
                 // Parsing Likes
                 QJsonArray arr = obj["likedBy"].toArray();
                 for (auto v : arr) postData.likedBy << v.toString();
 
-                // Fleshing out the internal list with the post widgets
                 Posts* postWidget = new Posts(this);
-                postWidget->setPostData(postData, currentUser.username);
+                postWidget->setPostData(postData, loggedInUser.username);
+
                 layout->addWidget(postWidget);
             }
         }
-    }
-    else {
-        qDebug() << "LOG: posts.json not found in resources.";
     }
 }
