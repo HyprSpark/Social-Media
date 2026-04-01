@@ -160,17 +160,17 @@ bool UserManager::userExists(const QString& username)
  * If they are friends, it removes them. If not, it adds them.
  */
 
-void UserManager::toggleFriend(const QString& currentUsername, const QString& targetUsername) {
+void UserManager::toggleFollow(const QString& currentUsername, const QString& targetUsername) {
     QVector<User> users = loadUsers();
     bool changed = false;
 
     for (User& u : users) {
         if (u.username == currentUsername) {
-            if (u.friends.contains(targetUsername)) {
-                u.friends.removeAll(targetUsername); // Unfriend logic
+            if (u.following.contains(targetUsername)) {
+                u.following.removeAll(targetUsername); // Unfriend logic
             }
             else {
-                u.friends.append(targetUsername);    // Friend logic
+                u.following.append(targetUsername);    // Friend logic
             }
             changed = true;
             break;

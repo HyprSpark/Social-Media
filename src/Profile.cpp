@@ -15,14 +15,22 @@ Profile::Profile(QWidget* parent) : QMainWindow(parent) {
     layout->setAlignment(Qt::AlignTop);
 
     connect(ui.btnToFeed, &QPushButton::clicked, this, &Profile::onReturnClicked);
-    connect(ui.btnFriend, &QPushButton::clicked, this, &Profile::onFriendClicked);
+    connect(ui.btnFollow, &QPushButton::clicked, this, &Profile::onFollowClicked);
 }
 
 Profile::~Profile() {}
 
 void Profile::setActiveUser(const User& user, const User& viewer) {
     viewedUser = user;     // The profile owner
-    loggedInUser = viewer; // The person viewing
+    viewedUser = user;     // The profile owner
+
+    QVector<User> allUsers = UserManager::loadUsers();
+    for (const User& u : allUsers) {
+        if (u.username == viewer.username) {
+            loggedInUser = u;
+            break;
+        }
+    }
 
     ui.lblUsername->setText(viewedUser.username);
 
@@ -43,47 +51,47 @@ void Profile::setActiveUser(const User& user, const User& viewer) {
     loadUserPosts();
 
     // Check relationship status
-    isAlreadyFriends = loggedInUser.friends.contains(viewedUser.username);
+    isAlreadyFollowing = loggedInUser.following.contains(viewedUser.username, Qt::CaseInsensitive);
 
     if (viewedUser.username == loggedInUser.username) {
-        ui.btnFriend->setVisible(false);
+        ui.btnFollow->setVisible(false);
     }
     else {
-        ui.btnFriend->setVisible(true);
-        ui.btnFriend->setText(isAlreadyFriends ? "Unfriend" : "Add Friend");
-        ui.btnFriend->setStyleSheet(isAlreadyFriends ? "background-color: #444; color: white;" : "background-color: #0078d4; color: white;");
+        ui.btnFollow->setVisible(true);
+        ui.btnFollow->setText(isAlreadyFollowing ? "Unfollow" : "Follow");
+        ui.btnFollow->setStyleSheet(isAlreadyFollowing ? "background-color: #444; color: white;" : "background-color: #0078d4; color: white;");
     }
-    ui.lblFriendCount->setText(QString::number(viewedUser.friends.size()) + " Friends");
+    ui.lblFollowCount->setText(QString::number(viewedUser.following.size()) + " Following");
 }
 
 void Profile::onReturnClicked() {
     this->hide();
 }
 
-void Profile::onFriendClicked() {
+void Profile::onFollowClicked() {
     // 1. Update the Permanent JSON Database
-    UserManager::toggleFriend(loggedInUser.username, viewedUser.username);
+    UserManager::toggleFollow(loggedInUser.username, viewedUser.username);
 
     // 2. Flip the UI state
-    isAlreadyFriends = !isAlreadyFriends;
+    isAlreadyFollowing = !isAlreadyFollowing;
 
     // 3. IMPORTANT: Update the C++ object in memory
-    if (isAlreadyFriends) {
-        if (!loggedInUser.friends.contains(viewedUser.username)) {
-            loggedInUser.friends.append(viewedUser.username);
+    if (isAlreadyFollowing) {
+        if (!loggedInUser.following.contains(viewedUser.username)) {
+            loggedInUser.following.append(viewedUser.username);
         }
-        ui.btnFriend->setText("Unfriend");
-        ui.btnFriend->setStyleSheet("background-color: #444; color: white;");
+        ui.btnFollow->setText("Unfollow");
+        ui.btnFollow->setStyleSheet("background-color: #444; color: white;");
     }
     else {
-        loggedInUser.friends.removeAll(viewedUser.username);
-        ui.btnFriend->setText("Add Friend");
-        ui.btnFriend->setStyleSheet("background-color: #0078d4; color: white;");
+        loggedInUser.following.removeAll(viewedUser.username);
+        ui.btnFollow->setText("Follow");
+        ui.btnFollow->setStyleSheet("background-color: #0078d4; color: white;");
     }
 
-    // 4. Update the Friend Count label visually (Optional but looks better)
-    int currentCount = viewedUser.friends.size();
-    ui.lblFriendCount->setText(QString::number(isAlreadyFriends ? currentCount + 1 : currentCount) + " Friends");
+    // 4. Update the Follow Count label visually (Optional but looks better)
+    int currentCount = viewedUser.following.size();
+    ui.lblFollowCount->setText(QString::number(isAlreadyFollowing ? currentCount + 1 : currentCount) + " Follows");
 }
 
 void Profile::loadUserPosts() {

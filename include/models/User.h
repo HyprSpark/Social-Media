@@ -17,7 +17,7 @@ public:
     QString username;
     QString email;
     QString password;
-    QStringList friends;
+    QStringList following;
 
     // --- Constructors ---
 
@@ -42,11 +42,11 @@ public:
         obj["password"] = password;
 
         // Convert the QStringList of friends into a JSON Array
-        QJsonArray friendsArray;
-        for (const QString& friendName : friends) {
-            friendsArray.append(friendName);
+        QJsonArray followsArray;
+        for (const QString& followName : following) {
+            followsArray.append(followName);
         }
-        obj["friends"] = friendsArray;
+        obj["following"] = followsArray;
 
         return obj;
     }
@@ -65,9 +65,9 @@ public:
         u.password = obj["password"].toString("");
 
         // Extract the friends list from the JSON array
-        QJsonArray friendsArray = obj["friends"].toArray();
-        for (const QJsonValue& value : friendsArray) {
-            u.friends.append(value.toString());
+        QJsonArray followsArray = obj["following"].toArray();
+        for (const QJsonValue& value : followsArray) {
+            u.following.append(value.toString());
         }
 
         return u;

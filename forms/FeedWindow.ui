@@ -96,11 +96,44 @@
      <widget class="QWidget" name="widget" native="true">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QLabel" name="lblCreatePost">
-         <property name="text">
-          <string>Create Post:</string>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="bottomMargin">
+          <number>0</number>
          </property>
-        </widget>
+         <item>
+          <widget class="QLabel" name="lblCreatePost">
+           <property name="text">
+            <string>Create Post:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblSortAs">
+           <property name="maximumSize">
+            <size>
+             <width>50</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Sort As:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnSort">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Most Liked</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="QPlainTextEdit" name="newTextPost">
@@ -155,7 +188,7 @@
             <x>0</x>
             <y>0</y>
             <width>848</width>
-            <height>322</height>
+            <height>312</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3"/>

@@ -26,5 +26,5 @@ public:
 
 	static bool userExists(const QString& username); // Check if the user exists when trying to send a message.
 
-	static void toggleFriend(const QString& currentUsername, const QString& targetUsername); // Adds the target user to the current user's friend list if they aren't already friends.
+	static void toggleFollow(const QString& currentUsername, const QString& targetUsername); // Adds the target user to the current user's friend list if they aren't already friends.
 };

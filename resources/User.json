@@ -1,15 +1,14 @@
 [
     {
         "email": "admin@test.com",
-        "friends": [
-            "alex"
+        "following": [
         ],
         "password": "123456",
         "username": "admin"
     },
     {
         "email": "alex@uni.com",
-        "friends": [
+        "following": [
         ],
         "password": "alex123",
         "username": "alex"

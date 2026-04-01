@@ -28,10 +28,10 @@ private:
 	Ui::ProfileClass ui;
 	User viewedUser;           // FIXED: Matches the .cpp file
 	User loggedInUser;         // FIXED: Matches the .cpp file
-	bool isAlreadyFriends = false;
+	bool isAlreadyFollowing = false;
 
 private slots:
 	void onReturnClicked();
 	void loadUserPosts();
-	void onFriendClicked();
+	void onFollowClicked();
 };
