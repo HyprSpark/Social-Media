@@ -51,6 +51,7 @@ private slots:
 	void onMessagesClicked(); // Opens the secure messaging window
 	void onQuitClicked(); // Safely shuts down the entire application when the "Quit" button is clicked
 	void onSignOutClicked(); // Signs the user out and returns to the login screen when the "Sign Out" button is clicked
+	void onSortSelect(int index); // Sorts the feed based on the selected criteria (e.g., "Most Recent", "Most Liked")
 
 protected:
 	void showEvent(QShowEvent* event) override; // Detects when the window is shown again

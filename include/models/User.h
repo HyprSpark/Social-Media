@@ -18,6 +18,7 @@ public:
     QString email;
     QString password;
     QStringList following;
+    QStringList followers;
 
     // --- Constructors ---
 
@@ -48,6 +49,12 @@ public:
         }
         obj["following"] = followsArray;
 
+        QJsonArray followersArray;
+        for (const QString& followerName : followers) {
+            followersArray.append(followerName);
+        }
+        obj["followers"] = followersArray;
+
         return obj;
     }
 
@@ -68,6 +75,11 @@ public:
         QJsonArray followsArray = obj["following"].toArray();
         for (const QJsonValue& value : followsArray) {
             u.following.append(value.toString());
+        }
+
+        QJsonArray followersArray = obj["followers"].toArray();
+        for (const QJsonValue& value : followersArray) {
+            u.followers.append(value.toString());
         }
 
         return u;

@@ -160,26 +160,28 @@ bool UserManager::userExists(const QString& username)
  * If they are friends, it removes them. If not, it adds them.
  */
 
-void UserManager::toggleFollow(const QString& currentUsername, const QString& targetUsername) {
+void UserManager::toggleFollowing(const QString& followerName, const QString& targetName) {
     QVector<User> users = loadUsers();
     bool changed = false;
 
     for (User& u : users) {
-        if (u.username == currentUsername) {
-            if (u.following.contains(targetUsername)) {
-                u.following.removeAll(targetUsername); // Unfriend logic
-            }
-            else {
-                u.following.append(targetUsername);    // Friend logic
-            }
+        // Update the Follower's "following" list
+        if (u.username == followerName) {
+            if (u.following.contains(targetName)) u.following.removeAll(targetName);
+            else u.following.append(targetName);
             changed = true;
-            break;
+        }
+        // Update the Target's "followers" list
+        if (u.username == targetName) {
+            if (u.followers.contains(followerName)) u.followers.removeAll(followerName);
+            else u.followers.append(followerName);
+            changed = true;
         }
     }
 
     if (changed) {
         QFile file("resources/User.json");
-        if (file.open(QIODevice::WriteOnly)) {
+        if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             QJsonArray arr;
             for (const auto& u : users) arr.append(u.toJson());
             file.write(QJsonDocument(arr).toJson());

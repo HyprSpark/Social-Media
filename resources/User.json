@@ -1,6 +1,9 @@
 [
     {
         "email": "admin@test.com",
+        "followers": [
+            "alex"
+        ],
         "following": [
         ],
         "password": "123456",
@@ -8,9 +11,36 @@
     },
     {
         "email": "alex@uni.com",
+        "followers": [
+            "john",
+            "jane"
+        ],
         "following": [
+            "admin",
+            "john"
         ],
         "password": "alex123",
         "username": "alex"
+    },
+    {
+        "email": "johndoe@test.com",
+        "followers": [
+            "alex"
+        ],
+        "following": [
+            "alex"
+        ],
+        "password": "123456",
+        "username": "john"
+    },
+    {
+        "email": "janedoe@test.com",
+        "followers": [
+        ],
+        "following": [
+            "alex"
+        ],
+        "password": "654321",
+        "username": "jane"
     }
 ]

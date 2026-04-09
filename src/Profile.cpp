@@ -22,7 +22,6 @@ Profile::~Profile() {}
 
 void Profile::setActiveUser(const User& user, const User& viewer) {
     viewedUser = user;     // The profile owner
-    viewedUser = user;     // The profile owner
 
     QVector<User> allUsers = UserManager::loadUsers();
     for (const User& u : allUsers) {
@@ -61,7 +60,7 @@ void Profile::setActiveUser(const User& user, const User& viewer) {
         ui.btnFollow->setText(isAlreadyFollowing ? "Unfollow" : "Follow");
         ui.btnFollow->setStyleSheet(isAlreadyFollowing ? "background-color: #444; color: white;" : "background-color: #0078d4; color: white;");
     }
-    ui.lblFollowCount->setText(QString::number(viewedUser.following.size()) + " Following");
+    ui.lblFollowCount->setText(QString::number(viewedUser.followers.size()) + " Followers");
 }
 
 void Profile::onReturnClicked() {
@@ -70,7 +69,7 @@ void Profile::onReturnClicked() {
 
 void Profile::onFollowClicked() {
     // 1. Update the Permanent JSON Database
-    UserManager::toggleFollow(loggedInUser.username, viewedUser.username);
+    UserManager::toggleFollowing(loggedInUser.username, viewedUser.username);
 
     // 2. Flip the UI state
     isAlreadyFollowing = !isAlreadyFollowing;
@@ -80,18 +79,22 @@ void Profile::onFollowClicked() {
         if (!loggedInUser.following.contains(viewedUser.username)) {
             loggedInUser.following.append(viewedUser.username);
         }
+        if (!viewedUser.followers.contains(loggedInUser.username)) {
+            viewedUser.followers.append(loggedInUser.username);
+        }
         ui.btnFollow->setText("Unfollow");
         ui.btnFollow->setStyleSheet("background-color: #444; color: white;");
     }
     else {
         loggedInUser.following.removeAll(viewedUser.username);
+        viewedUser.followers.removeAll(loggedInUser.username);
         ui.btnFollow->setText("Follow");
         ui.btnFollow->setStyleSheet("background-color: #0078d4; color: white;");
     }
 
     // 4. Update the Follow Count label visually (Optional but looks better)
-    int currentCount = viewedUser.following.size();
-    ui.lblFollowCount->setText(QString::number(isAlreadyFollowing ? currentCount + 1 : currentCount) + " Follows");
+    int currentCount = viewedUser.followers.size();
+    ui.lblFollowCount->setText(QString::number(currentCount) + " Followers");
 }
 
 void Profile::loadUserPosts() {

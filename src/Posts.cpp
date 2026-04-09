@@ -1,6 +1,11 @@
 #include "Posts.h"
 #include "Content.h"
 #include "Profile.h"
+#include "userManager.h"
+#include <QVector>
+#include <QDebug>
+#include <QVBoxLayout>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QFile>
 #include <QJsonDocument>
@@ -122,16 +127,30 @@ void Posts::onUsernameClicked()
 {
 	Profile* profile = new Profile();
 
-	// 1. Create a User object for the Author of the post
+	// 1. Get the full list of users from the database
+	QVector<User> allUsers = UserManager::loadUsers();
+
 	User author;
-	author.username = currentData.username;
-
-	// 2. Create a User object for the Viewer (You)
-	// We use the 'currentUser' string that was saved in setPostData
 	User viewer;
-	viewer.username = currentUser;
+	bool authorFound = false;
 
-	// 3. Pass both to the profile window
+	// 2. Find the actual Author and Viewer objects in the list
+	for (const User& u : allUsers) {
+		if (u.username == currentData.username) {
+			author = u; 
+			authorFound = true;
+		}
+		if (u.username == currentUser) {
+			viewer = u; 
+		}
+	}
+
+	// 3. If for some reason the author isn't in User.json, fallback (safety check)
+	if (!authorFound) {
+		author.username = currentData.username;
+	}
+
+	// 4. Pass the fully-populated objects to the profile
 	profile->setActiveUser(author, viewer);
 	profile->show();
 }

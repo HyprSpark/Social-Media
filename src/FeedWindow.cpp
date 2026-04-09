@@ -15,6 +15,7 @@
 #include <QJsonObject>
 #include <QDateTime>
 #include <QShowEvent>
+#include <algorithm>
 
 /**
  * @brief Constructor: Sets up the main dashboard and UI layout.
@@ -38,6 +39,7 @@ FeedWindow::FeedWindow(QWidget* parent)
     connect(ui.btnQuit, &QPushButton::clicked, this, &FeedWindow::onQuitClicked);
     connect(ui.btnSignOut, &QPushButton::clicked, this, &FeedWindow::onSignOutClicked);
     connect(ui.btnMessages, &QPushButton::clicked, this, &FeedWindow::onMessagesClicked);
+    connect(ui.selectAlgo, &QComboBox::currentIndexChanged, this, &FeedWindow::onSortSelect);
 }
 
 FeedWindow::~FeedWindow() {}
@@ -125,27 +127,57 @@ void FeedWindow::loadPosts() {
         return;
     }
 
+    QVector<User> allUsers = UserManager::loadUsers();
+    for (const User& u : allUsers) {
+        if (u.username == currentUser.username) {
+            currentUser = u;
+            break;
+        }
+    }
+
     QJsonArray postsArray = QJsonDocument::fromJson(file.readAll()).array();
     file.close();
 
-    // Clear existing widgets to prevent "doubling up"
+    // Move JSON data into a temporary list for sorting 
+    QList<Content> postList;
+    for (const QJsonValue& value : postsArray) {
+        postList.append(Content::fromJson(value.toObject()));
+    }
+
+    // THE SORTING ALGORITHM 
+    int sortType = ui.selectAlgo->currentIndex();
+
+    if (sortType == 1) { // Most Liked sort
+        std::sort(postList.begin(), postList.end(), [](const Content& a, const Content& b) {
+            return a.likedBy.size() > b.likedBy.size(); // Most likes first
+            });
+    }
+    else if (sortType == 2) { // Following sort
+        std::sort(postList.begin(), postList.end(), [this](const Content& a, const Content& b) {
+            // Check if 'a' and 'b' are in the current user's following list
+            bool aIsFollowed = currentUser.following.contains(a.username);
+            bool bIsFollowed = currentUser.following.contains(b.username);
+
+            if (aIsFollowed != bIsFollowed) {
+                return aIsFollowed; // If only one is followed, put them first
+            }
+            return false; // Otherwise, maintain original order
+            });
+    }
+    // Note: If sortType is 0 (Newest), we don't need to sort because 
+    // the JSON is already prepended (newest first).
+
+    // Clear existing widgets 
     QLayoutItem* item;
     while (ui.scrollPosts->layout() && (item = ui.scrollPosts->layout()->takeAt(0)) != nullptr) {
         if (item->widget()) delete item->widget();
         delete item;
     }
 
-    // Build the feed
-    for (const QJsonValue& value : postsArray) {
-        QJsonObject obj = value.toObject();
-
-        // Use the static fromJson method from Content class
-        Content postData = Content::fromJson(obj);
-
+    // Build the UI using the sorted list 
+    for (const Content& postData : postList) {
         Posts* postWidget = new Posts(this);
-        // Ensure the post widget knows who is currently viewing the feed
         postWidget->setPostData(postData, currentUser.username);
-
         ui.scrollPosts->layout()->addWidget(postWidget);
     }
 }
@@ -176,4 +208,8 @@ void FeedWindow::showEvent(QShowEvent* event) {
 
     qDebug() << "LOG: FeedWindow reappeared. Refreshing posts for sync...";
     loadPosts(); // This pulls the fresh 'likedBy' lists from the JSON
+}
+
+void FeedWindow::onSortSelect(int index) {
+    loadPosts();
 }
