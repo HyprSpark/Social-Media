@@ -8,11 +8,11 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QVBoxLayout>
+#include <QDebug>
 
 Profile::Profile(QWidget* parent) : QMainWindow(parent) {
     ui.setupUi(this);
-    QVBoxLayout* layout = new QVBoxLayout(ui.scrollProfilePosts);
-    layout->setAlignment(Qt::AlignTop);
+    qDebug() << "[INFO] UI: Initializing Profile Window.";
 
     connect(ui.btnToFeed, &QPushButton::clicked, this, &Profile::onReturnClicked);
     connect(ui.btnFollow, &QPushButton::clicked, this, &Profile::onFollowClicked);
@@ -21,12 +21,15 @@ Profile::Profile(QWidget* parent) : QMainWindow(parent) {
 Profile::~Profile() {}
 
 void Profile::setActiveUser(const User& user, const User& viewer) {
-    viewedUser = user;     // The profile owner
+    viewedUser = user;
+    qDebug() << "[INFO] Profile: Loading data for profile owner:" << viewedUser.username;
 
+    // Re-syncing viewer to ensure we have the latest 'following' list
     QVector<User> allUsers = UserManager::loadUsers();
     for (const User& u : allUsers) {
         if (u.username == viewer.username) {
             loggedInUser = u;
+            qDebug() << "[DEBUG] Auth: Viewer session synchronized as:" << loggedInUser.username;
             break;
         }
     }
@@ -42,17 +45,18 @@ void Profile::setActiveUser(const User& user, const User& viewer) {
         ui.lblProfilePic->setStyleSheet("background: transparent; border: 1px solid #555;");
     }
     else {
+        qDebug() << "[DEBUG] UI: Default avatar not found, using placeholder.";
         ui.lblProfilePic->setText("?");
         ui.lblProfilePic->setAlignment(Qt::AlignCenter);
     }
 
-    // Load the owner's posts
+    qDebug() << "[INFO] Profile: Filtering posts for owner's personal feed.";
     loadUserPosts();
 
-    // Check relationship status
     isAlreadyFollowing = loggedInUser.following.contains(viewedUser.username, Qt::CaseInsensitive);
 
     if (viewedUser.username == loggedInUser.username) {
+        qDebug() << "[DEBUG] UI: Hiding follow button (User is viewing own profile).";
         ui.btnFollow->setVisible(false);
     }
     else {
@@ -68,13 +72,15 @@ void Profile::onReturnClicked() {
 }
 
 void Profile::onFollowClicked() {
+    qDebug() << "[INFO] Social: Toggling follow status between" << loggedInUser.username << "and" << viewedUser.username;
+
     // 1. Update the Permanent JSON Database
     UserManager::toggleFollowing(loggedInUser.username, viewedUser.username);
 
     // 2. Flip the UI state
     isAlreadyFollowing = !isAlreadyFollowing;
 
-    // 3. IMPORTANT: Update the C++ object in memory
+    // 3. Update the objects in memory
     if (isAlreadyFollowing) {
         if (!loggedInUser.following.contains(viewedUser.username)) {
             loggedInUser.following.append(viewedUser.username);
@@ -92,15 +98,16 @@ void Profile::onFollowClicked() {
         ui.btnFollow->setStyleSheet("background-color: #0078d4; color: white;");
     }
 
-    // 4. Update the Follow Count label visually (Optional but looks better)
-    int currentCount = viewedUser.followers.size();
-    ui.lblFollowCount->setText(QString::number(currentCount) + " Followers");
+    ui.lblFollowCount->setText(QString::number(viewedUser.followers.size()) + " Followers");
+    qDebug() << "[SUCCESS] PERSISTENCE: Follow relationship updated and synced to disk.";
 }
 
 void Profile::loadUserPosts() {
-    QLayout* layout = ui.scrollProfilePosts->layout();
+    // FIX: Instead of creating a new layout, we look for the one created in the constructor
+    QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(ui.scrollProfilePosts->layout());
 
     if (layout) {
+        qDebug() << "[DEBUG] UI: Clearing existing profile posts from layout.";
         QLayoutItem* item;
         while ((item = layout->takeAt(0)) != nullptr) {
             if (item->widget()) delete item->widget();
@@ -108,6 +115,8 @@ void Profile::loadUserPosts() {
         }
     }
     else {
+        // Fallback if somehow the constructor layout was lost
+        qDebug() << "[DEBUG] UI: Layout missing, initializing fallback QVBoxLayout.";
         layout = new QVBoxLayout(ui.scrollProfilePosts);
         layout->setAlignment(Qt::AlignTop);
     }
@@ -117,23 +126,23 @@ void Profile::loadUserPosts() {
         QJsonArray postsArray = QJsonDocument::fromJson(file.readAll()).array();
         file.close();
 
+        int postCount = 0;
         for (const QJsonValue& value : postsArray) {
             QJsonObject obj = value.toObject();
             if (obj["username"].toString() == viewedUser.username) {
-                Content postData;
-                postData.username = obj["username"].toString();
-                postData.content = obj["content"].toString();
-                postData.timestamp = obj["timestamp"].toString(); // Don't forget timestamp!
-
-                // Parsing Likes
-                QJsonArray arr = obj["likedBy"].toArray();
-                for (auto v : arr) postData.likedBy << v.toString();
+                // Use the polymorphic model to build data
+                Post postData = Post::fromJson(obj);
 
                 Posts* postWidget = new Posts(this);
                 postWidget->setPostData(postData, loggedInUser.username);
 
                 layout->addWidget(postWidget);
+                postCount++;
             }
         }
+        qDebug() << "[SUCCESS] Profile: Rendered" << postCount << "posts for user" << viewedUser.username;
+    }
+    else {
+        qDebug() << "[ERROR] PERSISTENCE: Failed to open posts.json for profile filtering.";
     }
 }

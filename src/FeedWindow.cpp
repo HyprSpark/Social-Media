@@ -1,10 +1,14 @@
 #include "FeedWindow.h"
 #include "Profile.h"
 #include "Posts.h"
-#include "Content.h" 
+#include "models/Post.h" 
 #include "Messages.h"
 #include "LoginWindow.h"
 #include "userManager.h"
+#include "strategies/FeedStrategy.h"
+#include "strategies/MostLikedStrategy.h"
+#include "strategies/FollowingStrategy.h"
+#include "strategies/NewestStrategy.h"
 #include <QApplication> 
 #include <QPushButton>
 #include <QString>
@@ -17,23 +21,19 @@
 #include <QShowEvent>
 #include <algorithm>
 
-/**
- * @brief Constructor: Sets up the main dashboard and UI layout.
- */
 FeedWindow::FeedWindow(QWidget* parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
+    qDebug() << "[INFO] UI: Initializing FeedWindow and setting up layouts.";
 
-    // --- Layout Setup --- //
-    // Fetches the existing layout from the scroll area or creates one if missing.
     QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(ui.scrollPosts->layout());
     if (!layout) {
+        qDebug() << "[DEBUG] UI: No layout found for scrollPosts, creating new QVBoxLayout.";
         layout = new QVBoxLayout(ui.scrollPosts);
     }
     layout->setAlignment(Qt::AlignTop);
 
-    // --- Button Connections --- //
     connect(ui.btnMyProfile, &QPushButton::clicked, this, &FeedWindow::onMyProfileClicked);
     connect(ui.btnSubmitPost, &QPushButton::clicked, this, &FeedWindow::onSubmitPostClicked);
     connect(ui.btnQuit, &QPushButton::clicked, this, &FeedWindow::onQuitClicked);
@@ -44,24 +44,18 @@ FeedWindow::FeedWindow(QWidget* parent)
 
 FeedWindow::~FeedWindow() {}
 
-/**
- * @brief Sets the active user and triggers the initial post load.
- */
 void FeedWindow::setActiveUser(const User& user) {
     currentUser = user;
+    qDebug() << "[INFO] Auth: FeedWindow session started for user:" << currentUser.username;
     loadPosts();
 }
 
-/**
- * @brief Opens the Profile window.
- * Passes the currentUser twice: once as the owner and once as the viewer.
- */
 void FeedWindow::onMyProfileClicked() {
-    // Before opening the profile, re-load the users to ensure we have the latest friend list
+    qDebug() << "[DEBUG] Auth: Re-syncing currentUser with database before opening Profile.";
     QVector<User> allUsers = UserManager::loadUsers();
     for (const User& u : allUsers) {
         if (u.username == currentUser.username) {
-            currentUser = u; // Sync the local object with the database
+            currentUser = u;
             break;
         }
     }
@@ -72,19 +66,15 @@ void FeedWindow::onMyProfileClicked() {
     profile->show();
 }
 
-/**
- * @brief Logic for creating and saving a new post.
- */
 void FeedWindow::onSubmitPostClicked() {
     QString contentText = ui.newTextPost->toPlainText().trimmed();
     if (contentText.isEmpty()) return;
 
+    qDebug() << "[INFO] Post: User" << currentUser.username << "submitting a new post.";
+
     QString currentTime = QDateTime::currentDateTime().toString("MMM dd, HH:mm");
+    Post postData(currentUser.username, contentText, currentTime);
 
-    // Create the data object
-    Content postData(currentUser.username, contentText, QStringList(), currentTime);
-
-    // Save to JSON
     QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/posts.json";
     QFile file(filePath);
     QJsonArray postsArray;
@@ -99,9 +89,12 @@ void FeedWindow::onSubmitPostClicked() {
     if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         file.write(QJsonDocument(postsArray).toJson());
         file.close();
+        qDebug() << "[PERSISTENCE] Success: Post saved to JSON database at:" << filePath;
+    }
+    else {
+        qDebug() << "[ERROR] PERSISTENCE: Failed to write to posts.json!";
     }
 
-    // Refresh UI by adding the new post to the top
     Posts* postWidget = new Posts(this);
     postWidget->setPostData(postData, currentUser.username);
 
@@ -111,22 +104,24 @@ void FeedWindow::onSubmitPostClicked() {
     ui.newTextPost->clear();
 }
 
-/**
- * @brief Reads the post database and populates the scroll area.
- */
 void FeedWindow::loadPosts() {
+    qDebug() << "[INFO] Feed: Refreshing global post feed.";
+
     QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/posts.json";
     QFile file(filePath);
 
-    // Fallback for Debug mode
     if (!file.exists()) {
         file.setFileName("resources/posts.json");
     }
 
     if (!file.open(QIODevice::ReadOnly)) {
+        qDebug() << "[ERROR] PERSISTENCE: Could not open posts.json for reading.";
         return;
     }
 
+    qDebug() << "[PERSISTENCE] Reading posts from:" << file.fileName();
+
+    // Re-sync user to catch following/follower updates
     QVector<User> allUsers = UserManager::loadUsers();
     for (const User& u : allUsers) {
         if (u.username == currentUser.username) {
@@ -138,51 +133,51 @@ void FeedWindow::loadPosts() {
     QJsonArray postsArray = QJsonDocument::fromJson(file.readAll()).array();
     file.close();
 
-    // Move JSON data into a temporary list for sorting 
-    QList<Content> postList;
+    QList<Post> postList;
     for (const QJsonValue& value : postsArray) {
-        postList.append(Content::fromJson(value.toObject()));
+        postList.append(Post::fromJson(value.toObject()));
     }
 
-    // THE SORTING ALGORITHM 
-    int sortType = ui.selectAlgo->currentIndex();
-
-    if (sortType == 1) { // Most Liked sort
-        std::sort(postList.begin(), postList.end(), [](const Content& a, const Content& b) {
-            return a.likedBy.size() > b.likedBy.size(); // Most likes first
-            });
-    }
-    else if (sortType == 2) { // Following sort
-        std::sort(postList.begin(), postList.end(), [this](const Content& a, const Content& b) {
-            // Check if 'a' and 'b' are in the current user's following list
-            bool aIsFollowed = currentUser.following.contains(a.username);
-            bool bIsFollowed = currentUser.following.contains(b.username);
-
-            if (aIsFollowed != bIsFollowed) {
-                return aIsFollowed; // If only one is followed, put them first
-            }
-            return false; // Otherwise, maintain original order
-            });
-    }
-    // Note: If sortType is 0 (Newest), we don't need to sort because 
-    // the JSON is already prepended (newest first).
-
-    // Clear existing widgets 
+    qDebug() << "[DEBUG] UI: Clearing" << ui.scrollPosts->layout()->count() << "existing widgets.";
     QLayoutItem* item;
     while (ui.scrollPosts->layout() && (item = ui.scrollPosts->layout()->takeAt(0)) != nullptr) {
         if (item->widget()) delete item->widget();
         delete item;
     }
 
-    // Build the UI using the sorted list 
-    for (const Content& postData : postList) {
+    FeedStrategy* strategy = nullptr;
+    int sortType = ui.selectAlgo->currentIndex();
+    QString strategyName;
+
+    if (sortType == 1) {
+        strategy = new MostLikedStrategy();
+        strategyName = "MostLikedStrategy";
+    }
+    else if (sortType == 2) {
+        strategy = new FollowingStrategy();
+        strategyName = "FollowingStrategy";
+    }
+    else {
+        strategy = new NewestStrategy();
+        strategyName = "NewestStrategy";
+    }
+
+    if (strategy) {
+        qDebug() << "[STRATEGY] Executing" << strategyName << "on" << postList.size() << "posts.";
+        strategy->sort(postList, currentUser);
+        delete strategy;
+    }
+
+    for (const Post& postData : postList) {
         Posts* postWidget = new Posts(this);
         postWidget->setPostData(postData, currentUser.username);
         ui.scrollPosts->layout()->addWidget(postWidget);
     }
+    qDebug() << "[SUCCESS] Feed: Finished rendering all post widgets.";
 }
 
 void FeedWindow::onMessagesClicked() {
+    qDebug() << "[INFO] UI: Opening Messages window.";
     if (messagesWindow == nullptr) {
         messagesWindow = new Messages(this);
         messagesWindow->setActiveUser(currentUser);
@@ -193,10 +188,12 @@ void FeedWindow::onMessagesClicked() {
 }
 
 void FeedWindow::onQuitClicked() {
+    qDebug() << "[INFO] App: Shutting down.";
     QApplication::quit();
 }
 
 void FeedWindow::onSignOutClicked() {
+    qDebug() << "[INFO] Auth: User signing out. Returning to LoginWindow.";
     LoginWindow* login = new LoginWindow();
     login->setAttribute(Qt::WA_DeleteOnClose);
     login->show();
@@ -204,12 +201,12 @@ void FeedWindow::onSignOutClicked() {
 }
 
 void FeedWindow::showEvent(QShowEvent* event) {
-    QMainWindow::showEvent(event); // Call the base class logic first
-
-    qDebug() << "LOG: FeedWindow reappeared. Refreshing posts for sync...";
-    loadPosts(); // This pulls the fresh 'likedBy' lists from the JSON
+    QMainWindow::showEvent(event);
+    qDebug() << "[INFO] UI: FeedWindow visible. Refreshing posts for data sync.";
+    loadPosts();
 }
 
 void FeedWindow::onSortSelect(int index) {
+    qDebug() << "[DEBUG] UI: Sort algorithm changed (Index:" << index << "). Triggering reload.";
     loadPosts();
 }

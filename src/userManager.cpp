@@ -4,43 +4,40 @@
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonArray>
-
-/**
-* @brief Loads the user data from a JSON file and returns a list of User objects.
-* opens the file, checks if it exists, and parses the JSON content to create User instances.
-*/
+#include <QCoreApplication>
 
 QVector<User> UserManager::loadUsers()
 {
     QVector<User> users;
 
-    QFile file("resources/User.json");
+    // Standardizing path to look for resources in the project head
+    QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/User.json";
+    QFile file(filePath);
 
-    // Fallback mechanism: If the file doesn't exist in the expected location try to load from resources
+    // Fallback mechanism
     if (!file.exists()) {
-        qDebug() << "LOG: Local users.json not found, trying resource...";
+        qDebug() << "[DEBUG] PERSISTENCE: Local User.json not found at project head, trying internal resource...";
         file.setFileName(":/resources/User.json");
     }
 
     if (!file.open(QIODevice::ReadOnly)) {
-        qDebug() << "ERROR: Could not open file. Path:" << file.fileName();
+        qDebug() << "[ERROR] PERSISTENCE: Could not open user database. Path:" << file.fileName();
         return users;
     }
 
-    qDebug() << "SUCCESS: File opened:" << file.fileName();
+    qDebug() << "[PERSISTENCE] Successfully opened user database:" << file.fileName();
     const QByteArray data = file.readAll();
     file.close();
 
-	// -- Parse the JSON data --
     QJsonParseError parseError;
     const QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
     if (parseError.error != QJsonParseError::NoError) {
-        qDebug() << "ERROR: JSON parse failed:" << parseError.errorString();
+        qDebug() << "[ERROR] JSON: Parse failed for User.json -" << parseError.errorString();
         return users;
     }
 
     if (!doc.isArray()) {
-        qDebug() << "ERROR: JSON document is not an array.";
+        qDebug() << "[ERROR] JSON: User document is not a valid array.";
         return users;
     }
 
@@ -48,62 +45,54 @@ QVector<User> UserManager::loadUsers()
     for (const auto& value : array)
         users.append(User::fromJson(value.toObject()));
 
+    qDebug() << "[DEBUG] Auth: Loaded" << users.size() << "users into memory cache.";
     return users;
 }
 
-/**
-* @brief saves a new user to the JSON file.
-* It first loads the existing users to prevent overwriting, appends the new user, and then writes the entire list back to the file.
-*/
-void UserManager::saveUser(const User& user) 
+void UserManager::saveUser(const User& user)
 {
-	// 1. Load existing users to prevent overwriting
-    QVector<User> users = loadUsers(); 
+    qDebug() << "[INFO] Auth: Registering new user record for" << user.username;
+
+    QVector<User> users = loadUsers();
     users.append(user);
 
-	// 2. Convert the list of users to a JSON array
     QJsonArray array;
     for (const auto& u : users) {
         array.append(u.toJson());
     }
 
-	// 3. Write the JSON array back to the file
-    QFile file("resources/User.json");
-    if (!file.open(QIODevice::WriteOnly)) {
-        qDebug() << "ERROR: Could not open file for writing:" << file.errorString();
+    QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/User.json";
+    QFile file(filePath);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        qDebug() << "[ERROR] PERSISTENCE: Could not write to User.json! Reason:" << file.errorString();
         return;
     }
 
     file.write(QJsonDocument(array).toJson());
     file.close();
 
-    qDebug() << "SUCCESS: Saved new user. Total users now:" << users.size();
+    qDebug() << "[SUCCESS] PERSISTENCE: Saved new user. Total users in database:" << users.size();
 }
-
-/**
-* @brief Authenticates a user by checking the provided email and password against the stored user data.
-*/
-
 
 bool UserManager::authenticate(const QString& email, const QString& password, User& outUser)
 {
+    qDebug() << "[INFO] Auth: Verifying credentials for email:" << email;
     QVector<User> users = loadUsers();
 
     for (const User& user : users)
     {
         if (user.email == email && user.password == password)
         {
+            qDebug() << "[SUCCESS] Auth: Match found for" << user.username;
             outUser = user;
             return true;
         }
     }
 
-	return false; // Access denied if no match is found
+    qDebug() << "[ERROR] Auth: No matching credentials found in database.";
+    return false;
 }
-
-/**
-* @brief Checks if the provided email already exists in the user database.
-*/
 
 bool UserManager::emailExists(const QString& email)
 {
@@ -113,65 +102,47 @@ bool UserManager::emailExists(const QString& email)
             return true;
         }
     }
-	return false; // No match found, email is available
-}
-
-/**
-* @brief Checks if both the username and email are unique in the user database.
-*/
-
-bool UserManager::isUnique(const QString& username, const QString& email)
-{
-    QVector<User> users = loadUsers();
-    for (const User& u : users) {
-        // compare() returns 0 if the strings match
-        if (u.username.compare(username, Qt::CaseInsensitive) == 0) {
-            return false;
-        }
-        if (u.email.compare(email, Qt::CaseInsensitive) == 0) {
-            return false;
-        }
-    }
-	return true; // Both username and email are unique
-}
-
-/**
-* @brief Checks if a user with the given username exists in the user database.
-*/
-
-bool UserManager::userExists(const QString& username)
-{
-    // 1. Load the current list of users
-    QVector<User> users = loadUsers();
-
-    // 2. Loop through the users to see if there's a match
-    for (const User& u : users) {
-        if (u.getUsername() == username) {
-            return true; // Found the user!
-        }
-    }
-
-    // 3. If the loop finishes without finding a match, the user doesn't exist
     return false;
 }
 
-/**
- * @brief Toggles the friendship status between two users.
- * If they are friends, it removes them. If not, it adds them.
- */
+bool UserManager::isUnique(const QString& username, const QString& email)
+{
+    qDebug() << "[DEBUG] Auth: Checking uniqueness for" << username << "/" << email;
+    QVector<User> users = loadUsers();
+    for (const User& u : users) {
+        if (u.username.compare(username, Qt::CaseInsensitive) == 0) return false;
+        if (u.email.compare(email, Qt::CaseInsensitive) == 0) return false;
+    }
+    return true;
+}
+
+bool UserManager::userExists(const QString& username)
+{
+    QVector<User> users = loadUsers();
+    for (const User& u : users) {
+        if (u.getUsername() == username) return true;
+    }
+    return false;
+}
 
 void UserManager::toggleFollowing(const QString& followerName, const QString& targetName) {
+    qDebug() << "[INFO] Social: Toggling relationship between" << followerName << "and" << targetName;
+
     QVector<User> users = loadUsers();
     bool changed = false;
 
     for (User& u : users) {
-        // Update the Follower's "following" list
         if (u.username == followerName) {
-            if (u.following.contains(targetName)) u.following.removeAll(targetName);
-            else u.following.append(targetName);
+            if (u.following.contains(targetName)) {
+                u.following.removeAll(targetName);
+                qDebug() << "[DEBUG] Social:" << followerName << "unfollowed" << targetName;
+            }
+            else {
+                u.following.append(targetName);
+                qDebug() << "[DEBUG] Social:" << followerName << "followed" << targetName;
+            }
             changed = true;
         }
-        // Update the Target's "followers" list
         if (u.username == targetName) {
             if (u.followers.contains(followerName)) u.followers.removeAll(followerName);
             else u.followers.append(followerName);
@@ -180,12 +151,14 @@ void UserManager::toggleFollowing(const QString& followerName, const QString& ta
     }
 
     if (changed) {
-        QFile file("resources/User.json");
+        QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/User.json";
+        QFile file(filePath);
         if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             QJsonArray arr;
             for (const auto& u : users) arr.append(u.toJson());
             file.write(QJsonDocument(arr).toJson());
             file.close();
+            qDebug() << "[SUCCESS] PERSISTENCE: User.json social graph updated on disk.";
         }
     }
 }
