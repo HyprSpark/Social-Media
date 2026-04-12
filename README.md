@@ -1,5 +1,8 @@
 # Social Media Qt App
 
+# Typst Link
+- https://typst.app/project/w5GPlUKzVc0SQ3rN53hAXK
+
 A desktop social media application built with **C++**, **Qt Widgets**, and **Visual Studio**.
 
 ## Features
