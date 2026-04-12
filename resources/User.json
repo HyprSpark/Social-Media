@@ -2,9 +2,12 @@
     {
         "email": "admin@test.com",
         "followers": [
-            "alex"
+            "alex",
+            "Dawid",
+            "dawidad"
         ],
         "following": [
+            "john"
         ],
         "password": "123456",
         "username": "admin"
@@ -13,7 +16,8 @@
         "email": "alex@uni.com",
         "followers": [
             "john",
-            "jane"
+            "jane",
+            "dawidad"
         ],
         "following": [
             "admin",
@@ -25,7 +29,8 @@
     {
         "email": "johndoe@test.com",
         "followers": [
-            "alex"
+            "alex",
+            "admin"
         ],
         "following": [
             "alex"
@@ -42,5 +47,26 @@
         ],
         "password": "654321",
         "username": "jane"
+    },
+    {
+        "email": "dawid@uni.com",
+        "followers": [
+        ],
+        "following": [
+            "admin"
+        ],
+        "password": "123456",
+        "username": "Dawid"
+    },
+    {
+        "email": "dawid@gmail.com",
+        "followers": [
+        ],
+        "following": [
+            "admin",
+            "alex"
+        ],
+        "password": "123456",
+        "username": "dawidad"
     }
 ]

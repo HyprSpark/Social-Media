@@ -2,6 +2,8 @@
     {
         "content": "Hello!",
         "likedBy": [
+            "dawidad",
+            "admin"
         ],
         "timestamp": "Apr 08, 17:30",
         "username": "john"
@@ -9,16 +11,11 @@
     {
         "content": "Hello!",
         "likedBy": [
-            "jane"
-        ],
-        "timestamp": "Mar 28, 15:47",
-        "username": "admin"
-    },
-    {
-        "content": "Hello!",
-        "likedBy": [
             "alex",
-            "jane"
+            "jane",
+            "Dawid",
+            "dawidad",
+            "admin"
         ],
         "timestamp": "Mar 28, 15:46",
         "username": "alex"
