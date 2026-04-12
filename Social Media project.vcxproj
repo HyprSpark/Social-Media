@@ -28,17 +28,16 @@
     <QtUic Include="forms\FeedWindow.ui" />
     <QtUic Include="forms\LoginWindow.ui" />
     <QtUic Include="forms\MainFeed.ui" />
+    <QtUic Include="forms\Messages.ui" />
     <QtUic Include="forms\Posts.ui" />
     <QtUic Include="forms\Profile.ui" />
     <QtUic Include="forms\SignUpWindow.ui" />
-    <QtUic Include="Messages.ui" />
-    <QtUic Include="Widget.ui" />
   </ItemGroup>
   <!-- CPP FILES -->
   <ItemGroup>
-    <ClCompile Include="Messages.cpp" />
     <ClCompile Include="src\FeedWindow.cpp" />
     <ClCompile Include="src\LoginWindow.cpp" />
+    <ClCompile Include="src\Messages.cpp" />
     <ClCompile Include="src\Posts.cpp" />
     <ClCompile Include="src\Profile.cpp" />
     <ClCompile Include="src\SignUpWindow.cpp" />
@@ -51,17 +50,23 @@
   </ItemGroup>
   <!-- HEADERS -->
   <ItemGroup>
-    <QtMoc Include="Messages.h" />
+    <QtMoc Include="include\Messages.h" />
+    <ClInclude Include="include\models\Content.h" />
+    <ClInclude Include="include\models\MessageData.h" />
+    <ClInclude Include="include\models\Post.h" />
+    <ClInclude Include="include\strategies\FeedStrategy.h" />
+    <ClInclude Include="include\strategies\FollowingStrategy.h" />
+    <ClInclude Include="include\strategies\MostLikedStrategy.h" />
+    <ClInclude Include="include\strategies\NewestStrategy.h" />
     <QtMoc Include="include\FeedWindow.h" />
-    <ClInclude Include="include\Content.h" />
     <ClInclude Include="include\models\User.h" />
     <QtMoc Include="include\Posts.h" />
     <QtMoc Include="include\Profile.h" />
     <ClInclude Include="include\userManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="messages.json" />
     <None Include="README.md" />
+    <None Include="resources\messages.json" />
     <None Include="resources\posts.json" />
     <None Include="resources\User.json" />
   </ItemGroup>
@@ -93,7 +98,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">

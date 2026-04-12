@@ -19,6 +19,9 @@
     <Filter Include="include\models">
       <UniqueIdentifier>{1033af2b-cf32-420b-b58e-040439343e76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\strategies">
+      <UniqueIdentifier>{3fe3c339-bcb7-4354-8e1b-3b360feb2d36}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="include\LoginWindow.h">
@@ -36,7 +39,7 @@
     <QtMoc Include="include\Profile.h">
       <Filter>include</Filter>
     </QtMoc>
-    <QtMoc Include="Messages.h">
+    <QtMoc Include="include\Messages.h">
       <Filter>include</Filter>
     </QtMoc>
   </ItemGroup>
@@ -59,10 +62,7 @@
     <QtUic Include="forms\Profile.ui">
       <Filter>forms</Filter>
     </QtUic>
-    <QtUic Include="Widget.ui">
-      <Filter>forms</Filter>
-    </QtUic>
-    <QtUic Include="Messages.ui">
+    <QtUic Include="forms\Messages.ui">
       <Filter>forms</Filter>
     </QtUic>
   </ItemGroup>
@@ -88,7 +88,7 @@
     <ClCompile Include="src\Profile.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="Messages.cpp">
+    <ClCompile Include="src\Messages.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -99,8 +99,26 @@
     <ClInclude Include="include\userManager.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\Content.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\models\MessageData.h">
+      <Filter>include\models</Filter>
+    </ClInclude>
+    <ClInclude Include="include\models\Post.h">
+      <Filter>include\models</Filter>
+    </ClInclude>
+    <ClInclude Include="include\models\Content.h">
+      <Filter>include\models</Filter>
+    </ClInclude>
+    <ClInclude Include="include\strategies\FeedStrategy.h">
+      <Filter>include\strategies</Filter>
+    </ClInclude>
+    <ClInclude Include="include\strategies\FollowingStrategy.h">
+      <Filter>include\strategies</Filter>
+    </ClInclude>
+    <ClInclude Include="include\strategies\MostLikedStrategy.h">
+      <Filter>include\strategies</Filter>
+    </ClInclude>
+    <ClInclude Include="include\strategies\NewestStrategy.h">
+      <Filter>include\strategies</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -118,7 +136,7 @@
     <None Include="resources\posts.json">
       <Filter>resources</Filter>
     </None>
-    <None Include="messages.json">
+    <None Include="resources\messages.json">
       <Filter>resources</Filter>
     </None>
   </ItemGroup>
