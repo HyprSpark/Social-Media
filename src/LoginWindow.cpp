@@ -2,15 +2,13 @@
 #include "LoginWindow.h"
 #include "SignUpWindow.h"
 #include "FeedWindow.h"
-#include "userManager.h"
+#include "UserManager.h"
 #include <QPushButton>
 #include <QPixmap>
 #include <QDebug>
 #include <QFile>
 
-/**
- * @brief Helper function to scale images for the login background
- * Note: This is currently defined but not actively used in the constructor below.
+/** * @brief Helper function to scale images for the login background
  */
 static QPixmap coverPixmap(const QPixmap& src, const QSize& size)
 {
@@ -24,33 +22,34 @@ LoginWindow::LoginWindow(QWidget* parent)
     ui.setupUi(this);
     qDebug() << "[INFO] UI: Initializing LoginWindow.";
 
-    // -- Button Connections -- //
+    // -- Button Connections --
     connect(ui.signInButton, &QPushButton::clicked,
         this, &LoginWindow::onSignInClicked);
 
     connect(ui.signUpButton, &QPushButton::clicked,
         this, &LoginWindow::onSignUpClicked);
 
-    // -- Load and Set Background Image -- //
+    // -- QoL: Enter Key Support --
+    // This allows the user to hit 'Enter' from either text box to trigger the sign-in
+    connect(ui.emailEdit, &QLineEdit::returnPressed, this, &LoginWindow::onSignInClicked);
+    connect(ui.passwordEdit, &QLineEdit::returnPressed, this, &LoginWindow::onSignInClicked);
+
+    // -- Load and Set Background Image --
     qDebug() << "[DEBUG] UI: Attempting to load background image from resources.";
     QPixmap px(":/resources/images/LoginBackground.png");
 
     if (px.isNull()) {
         qDebug() << "[ERROR] UI: Pixmap is null!";
-
-        if (QFile::exists(":/resources/images/LoginBackground.png")) {
-            qDebug() << "[DEBUG] UI: File exists in resources, but QPixmap failed to load (check format).";
-        }
-        else {
+        if (!QFile::exists(":/resources/images/LoginBackground.png")) {
             qDebug() << "[ERROR] UI: File does NOT exist in the resource system path.";
         }
     }
     else {
-        qDebug() << "[SUCCESS] UI: Background image loaded. Size:" << px.size();
+        qDebug() << "[SUCCESS] UI: Background image loaded.";
         ui.heroImageLabel->setScaledContents(true);
         ui.heroImageLabel->setGeometry(0, 0, 1000, 600);
         ui.heroImageLabel->setPixmap(px);
-        ui.heroImageLabel->lower(); // Send to back
+        ui.heroImageLabel->lower(); // Send to background layer
     }
 }
 
@@ -58,7 +57,7 @@ LoginWindow::~LoginWindow() {}
 
 void LoginWindow::onSignInClicked()
 {
-    qDebug() << "[INFO] Auth: Sign-in button clicked.";
+    qDebug() << "[INFO] Auth: Sign-in attempt initiated.";
     User loggedInUser;
 
     QString email = ui.emailEdit->text().trimmed();
@@ -70,7 +69,6 @@ void LoginWindow::onSignInClicked()
         return;
     }
 
-    qDebug() << "[DEBUG] Auth: Delegating authentication to UserManager.";
     if (UserManager::authenticate(email, password, loggedInUser)) {
         qDebug() << "[SUCCESS] Auth: Login verified for" << loggedInUser.username;
 
@@ -83,8 +81,13 @@ void LoginWindow::onSignInClicked()
         this->hide();
     }
     else {
-        qDebug() << "[ERROR] Auth: Invalid credentials provided for" << email;
+        qDebug() << "[ERROR] Auth: Invalid credentials for" << email;
         ui.statusLabel->setText("Invalid email or password.");
+
+        // -- The Password Wipe --
+        // Clears the field so the user can immediately re-type without hitting backspace
+        ui.passwordEdit->clear();
+        ui.passwordEdit->setFocus();
     }
 }
 

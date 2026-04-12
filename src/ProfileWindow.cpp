@@ -1,6 +1,6 @@
-#include "Profile.h"
+#include "ProfileWindow.h"
 #include "FeedWindow.h"
-#include "Posts.h"
+#include "PostWidget.h"
 #include "UserManager.h"
 #include <QMessageBox>
 #include <QFile>
@@ -10,17 +10,17 @@
 #include <QVBoxLayout>
 #include <QDebug>
 
-Profile::Profile(QWidget* parent) : QMainWindow(parent) {
+ProfileWindow::ProfileWindow(QWidget* parent) : QMainWindow(parent) {
     ui.setupUi(this);
     qDebug() << "[INFO] UI: Initializing Profile Window.";
 
-    connect(ui.btnToFeed, &QPushButton::clicked, this, &Profile::onReturnClicked);
-    connect(ui.btnFollow, &QPushButton::clicked, this, &Profile::onFollowClicked);
+    connect(ui.btnToFeed, &QPushButton::clicked, this, &ProfileWindow::onReturnClicked);
+    connect(ui.btnFollow, &QPushButton::clicked, this, &ProfileWindow::onFollowClicked);
 }
 
-Profile::~Profile() {}
+ProfileWindow::~ProfileWindow() {}
 
-void Profile::setActiveUser(const User& user, const User& viewer) {
+void ProfileWindow::setActiveUser(const User& user, const User& viewer) {
     viewedUser = user;
     qDebug() << "[INFO] Profile: Loading data for profile owner:" << viewedUser.username;
 
@@ -67,11 +67,11 @@ void Profile::setActiveUser(const User& user, const User& viewer) {
     ui.lblFollowCount->setText(QString::number(viewedUser.followers.size()) + " Followers");
 }
 
-void Profile::onReturnClicked() {
+void ProfileWindow::onReturnClicked() {
     this->hide();
 }
 
-void Profile::onFollowClicked() {
+void ProfileWindow::onFollowClicked() {
     qDebug() << "[INFO] Social: Toggling follow status between" << loggedInUser.username << "and" << viewedUser.username;
 
     // 1. Update the Permanent JSON Database
@@ -102,7 +102,7 @@ void Profile::onFollowClicked() {
     qDebug() << "[SUCCESS] PERSISTENCE: Follow relationship updated and synced to disk.";
 }
 
-void Profile::loadUserPosts() {
+void ProfileWindow::loadUserPosts() {
     // FIX: Instead of creating a new layout, we look for the one created in the constructor
     QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(ui.scrollProfilePosts->layout());
 
@@ -133,7 +133,7 @@ void Profile::loadUserPosts() {
                 // Use the polymorphic model to build data
                 Post postData = Post::fromJson(obj);
 
-                Posts* postWidget = new Posts(this);
+                PostWidget* postWidget = new PostWidget(this);
                 postWidget->setPostData(postData, loggedInUser.username);
 
                 layout->addWidget(postWidget);
@@ -145,4 +145,9 @@ void Profile::loadUserPosts() {
     else {
         qDebug() << "[ERROR] PERSISTENCE: Failed to open posts.json for profile filtering.";
     }
+}
+
+void ProfileWindow::closeEvent(QCloseEvent* event) {
+    emit windowClosed(); // Tell the FeedWindow to wake up
+    QMainWindow::closeEvent(event);
 }

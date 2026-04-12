@@ -5,5 +5,26 @@
         "recipient": "dawidad",
         "sender": "admin",
         "timestamp": "2026-04-12T17:18:57"
+    },
+    {
+        "content": "Hello you are a stinky bum",
+        "isRead": false,
+        "recipient": "alex",
+        "sender": "Peny",
+        "timestamp": "2026-04-12T17:44:37"
+    },
+    {
+        "content": "Hello you are a stinky bum",
+        "isRead": true,
+        "recipient": "admin",
+        "sender": "Peny",
+        "timestamp": "2026-04-12T17:45:03"
+    },
+    {
+        "content": "Hello you are also a stinky bum bum!!!!!!!!!!",
+        "isRead": false,
+        "recipient": "john",
+        "sender": "admin",
+        "timestamp": "2026-04-12T17:46:48"
     }
 ]

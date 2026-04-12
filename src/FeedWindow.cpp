@@ -1,10 +1,10 @@
 #include "FeedWindow.h"
-#include "Profile.h"
-#include "Posts.h"
+#include "ProfileWindow.h"
+#include "PostWidget.h"
 #include "models/Post.h" 
-#include "Messages.h"
+#include "MessagesWindow.h"
 #include "LoginWindow.h"
-#include "userManager.h"
+#include "UserManager.h"
 #include "strategies/FeedStrategy.h"
 #include "strategies/MostLikedStrategy.h"
 #include "strategies/FollowingStrategy.h"
@@ -20,16 +20,16 @@
 #include <QDateTime>
 #include <QShowEvent>
 #include <algorithm>
+#include <QEvent>
 
 FeedWindow::FeedWindow(QWidget* parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
-    qDebug() << "[INFO] UI: Initializing FeedWindow and setting up layouts.";
+    qDebug() << "[INFO] UI: Initializing FeedWindow.";
 
     QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(ui.scrollPosts->layout());
     if (!layout) {
-        qDebug() << "[DEBUG] UI: No layout found for scrollPosts, creating new QVBoxLayout.";
         layout = new QVBoxLayout(ui.scrollPosts);
     }
     layout->setAlignment(Qt::AlignTop);
@@ -46,12 +46,11 @@ FeedWindow::~FeedWindow() {}
 
 void FeedWindow::setActiveUser(const User& user) {
     currentUser = user;
-    qDebug() << "[INFO] Auth: FeedWindow session started for user:" << currentUser.username;
     loadPosts();
+    updateMessageButtonVisuals();
 }
 
 void FeedWindow::onMyProfileClicked() {
-    qDebug() << "[DEBUG] Auth: Re-syncing currentUser with database before opening Profile.";
     QVector<User> allUsers = UserManager::loadUsers();
     for (const User& u : allUsers) {
         if (u.username == currentUser.username) {
@@ -60,17 +59,20 @@ void FeedWindow::onMyProfileClicked() {
         }
     }
 
-    Profile* profile = new Profile();
-    profile->setActiveUser(currentUser, currentUser);
-    profile->setAttribute(Qt::WA_DeleteOnClose);
-    profile->show();
+    ProfileWindow* profileWindow = new ProfileWindow();
+    profileWindow->setAttribute(Qt::WA_DeleteOnClose);
+    profileWindow->setWindowModality(Qt::ApplicationModal);
+
+    connect(profileWindow, &ProfileWindow::windowClosed, this, &FeedWindow::loadPosts);
+    connect(profileWindow, &ProfileWindow::windowClosed, this, &FeedWindow::updateMessageButtonVisuals);
+
+    profileWindow->setActiveUser(currentUser, currentUser);
+    profileWindow->show();
 }
 
 void FeedWindow::onSubmitPostClicked() {
     QString contentText = ui.newTextPost->toPlainText().trimmed();
     if (contentText.isEmpty()) return;
-
-    qDebug() << "[INFO] Post: User" << currentUser.username << "submitting a new post.";
 
     QString currentTime = QDateTime::currentDateTime().toString("MMM dd, HH:mm");
     Post postData(currentUser.username, contentText, currentTime);
@@ -89,46 +91,16 @@ void FeedWindow::onSubmitPostClicked() {
     if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         file.write(QJsonDocument(postsArray).toJson());
         file.close();
-        qDebug() << "[PERSISTENCE] Success: Post saved to JSON database at:" << filePath;
-    }
-    else {
-        qDebug() << "[ERROR] PERSISTENCE: Failed to write to posts.json!";
     }
 
-    Posts* postWidget = new Posts(this);
-    postWidget->setPostData(postData, currentUser.username);
-
-    QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(ui.scrollPosts->layout());
-    if (layout) layout->insertWidget(0, postWidget);
-
+    loadPosts();
     ui.newTextPost->clear();
 }
 
 void FeedWindow::loadPosts() {
-    qDebug() << "[INFO] Feed: Refreshing global post feed.";
-
     QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/posts.json";
     QFile file(filePath);
-
-    if (!file.exists()) {
-        file.setFileName("resources/posts.json");
-    }
-
-    if (!file.open(QIODevice::ReadOnly)) {
-        qDebug() << "[ERROR] PERSISTENCE: Could not open posts.json for reading.";
-        return;
-    }
-
-    qDebug() << "[PERSISTENCE] Reading posts from:" << file.fileName();
-
-    // Re-sync user to catch following/follower updates
-    QVector<User> allUsers = UserManager::loadUsers();
-    for (const User& u : allUsers) {
-        if (u.username == currentUser.username) {
-            currentUser = u;
-            break;
-        }
-    }
+    if (!file.open(QIODevice::ReadOnly)) return;
 
     QJsonArray postsArray = QJsonDocument::fromJson(file.readAll()).array();
     file.close();
@@ -138,7 +110,6 @@ void FeedWindow::loadPosts() {
         postList.append(Post::fromJson(value.toObject()));
     }
 
-    qDebug() << "[DEBUG] UI: Clearing" << ui.scrollPosts->layout()->count() << "existing widgets.";
     QLayoutItem* item;
     while (ui.scrollPosts->layout() && (item = ui.scrollPosts->layout()->takeAt(0)) != nullptr) {
         if (item->widget()) delete item->widget();
@@ -147,45 +118,33 @@ void FeedWindow::loadPosts() {
 
     FeedStrategy* strategy = nullptr;
     int sortType = ui.selectAlgo->currentIndex();
-    QString strategyName;
-
-    if (sortType == 1) {
-        strategy = new MostLikedStrategy();
-        strategyName = "MostLikedStrategy";
-    }
-    else if (sortType == 2) {
-        strategy = new FollowingStrategy();
-        strategyName = "FollowingStrategy";
-    }
-    else {
-        strategy = new NewestStrategy();
-        strategyName = "NewestStrategy";
-    }
+    if (sortType == 1) strategy = new MostLikedStrategy();
+    else if (sortType == 2) strategy = new FollowingStrategy();
+    else strategy = new NewestStrategy();
 
     if (strategy) {
-        qDebug() << "[STRATEGY] Executing" << strategyName << "on" << postList.size() << "posts.";
         strategy->sort(postList, currentUser);
         delete strategy;
     }
 
     for (const Post& postData : postList) {
-        Posts* postWidget = new Posts(this);
+        PostWidget* postWidget = new PostWidget(this);
         postWidget->setPostData(postData, currentUser.username);
         ui.scrollPosts->layout()->addWidget(postWidget);
     }
-    qDebug() << "[SUCCESS] Feed: Finished rendering all post widgets.";
 }
 
 void FeedWindow::onMessagesClicked() {
-    qDebug() << "[INFO] UI: Opening Messages window.";
     if (messagesWindow == nullptr) {
-        messagesWindow = new Messages(this);
-        messagesWindow->setActiveUser(currentUser);
+        messagesWindow = new MessagesWindow(this);
+        messagesWindow->setWindowModality(Qt::ApplicationModal);
+        connect(messagesWindow, &QObject::destroyed, this, [this]() { messagesWindow = nullptr; });
     }
+    messagesWindow->setActiveUser(currentUser);
     messagesWindow->show();
-    messagesWindow->raise();
-    messagesWindow->activateWindow();
 }
+
+// --- MISSING FUNCTIONS START HERE ---
 
 void FeedWindow::onQuitClicked() {
     qDebug() << "[INFO] App: Shutting down.";
@@ -202,11 +161,47 @@ void FeedWindow::onSignOutClicked() {
 
 void FeedWindow::showEvent(QShowEvent* event) {
     QMainWindow::showEvent(event);
-    qDebug() << "[INFO] UI: FeedWindow visible. Refreshing posts for data sync.";
     loadPosts();
+    updateMessageButtonVisuals();
 }
 
 void FeedWindow::onSortSelect(int index) {
-    qDebug() << "[DEBUG] UI: Sort algorithm changed (Index:" << index << "). Triggering reload.";
+    qDebug() << "[DEBUG] UI: Algorithm changed. Reloading feed.";
     loadPosts();
+}
+
+void FeedWindow::updateMessageButtonVisuals()
+{
+    QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/messages.json";
+    QFile file(filePath);
+    int unreadCount = 0;
+
+    if (file.open(QIODevice::ReadOnly)) {
+        QJsonArray messagesArray = QJsonDocument::fromJson(file.readAll()).array();
+        file.close();
+        for (const QJsonValue& value : messagesArray) {
+            QJsonObject msgObj = value.toObject();
+            if (msgObj["recipient"].toString() == currentUser.getUsername() && !msgObj["isRead"].toBool()) {
+                unreadCount++;
+            }
+        }
+    }
+
+    if (unreadCount > 0) {
+        ui.btnMessages->setText(QString("Messages (%1)").arg(unreadCount));
+        ui.btnMessages->setStyleSheet("background-color: #2ecc71; color: white; font-weight: bold; border-radius: 5px;");
+    }
+    else {
+        ui.btnMessages->setText("Messages");
+        ui.btnMessages->setStyleSheet("");
+    }
+}
+
+bool FeedWindow::event(QEvent* e)
+{
+    if (e->type() == QEvent::WindowActivate) {
+        loadPosts();
+        updateMessageButtonVisuals();
+    }
+    return QMainWindow::event(e);
 }

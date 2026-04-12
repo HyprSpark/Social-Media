@@ -28,21 +28,21 @@
     <QtUic Include="forms\FeedWindow.ui" />
     <QtUic Include="forms\LoginWindow.ui" />
     <QtUic Include="forms\MainFeed.ui" />
-    <QtUic Include="forms\Messages.ui" />
-    <QtUic Include="forms\Posts.ui" />
-    <QtUic Include="forms\Profile.ui" />
+    <QtUic Include="forms\MessagesWindow.ui" />
+    <QtUic Include="forms\PostWidget.ui" />
+    <QtUic Include="forms\ProfileWindow.ui" />
     <QtUic Include="forms\SignUpWindow.ui" />
   </ItemGroup>
   <!-- CPP FILES -->
   <ItemGroup>
     <ClCompile Include="src\FeedWindow.cpp" />
     <ClCompile Include="src\LoginWindow.cpp" />
-    <ClCompile Include="src\Messages.cpp" />
-    <ClCompile Include="src\Posts.cpp" />
-    <ClCompile Include="src\Profile.cpp" />
+    <ClCompile Include="src\MessagesWindow.cpp" />
+    <ClCompile Include="src\PostWidget.cpp" />
+    <ClCompile Include="src\ProfileWindow.cpp" />
     <ClCompile Include="src\SignUpWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\userManager.cpp" />
+    <ClCompile Include="src\UserManager.cpp" />
   </ItemGroup>
   <!-- RESOURCES -->
   <ItemGroup>
@@ -50,7 +50,7 @@
   </ItemGroup>
   <!-- HEADERS -->
   <ItemGroup>
-    <QtMoc Include="include\Messages.h" />
+    <QtMoc Include="include\MessagesWindow.h" />
     <ClInclude Include="include\models\Content.h" />
     <ClInclude Include="include\models\MessageData.h" />
     <ClInclude Include="include\models\Post.h" />
@@ -60,15 +60,15 @@
     <ClInclude Include="include\strategies\NewestStrategy.h" />
     <QtMoc Include="include\FeedWindow.h" />
     <ClInclude Include="include\models\User.h" />
-    <QtMoc Include="include\Posts.h" />
-    <QtMoc Include="include\Profile.h" />
-    <ClInclude Include="include\userManager.h" />
+    <QtMoc Include="include\PostWidget.h" />
+    <QtMoc Include="include\ProfileWindow.h" />
+    <ClInclude Include="include\UserManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
     <None Include="resources\messages.json" />
     <None Include="resources\posts.json" />
-    <None Include="resources\User.json" />
+    <None Include="resources\user.json" />
   </ItemGroup>
   <!-- GLOBALS -->
   <PropertyGroup Label="Globals">

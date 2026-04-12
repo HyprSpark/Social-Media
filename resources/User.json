@@ -7,7 +7,8 @@
             "dawidad"
         ],
         "following": [
-            "john"
+            "john",
+            "Peny"
         ],
         "password": "123456",
         "username": "admin"
@@ -17,7 +18,8 @@
         "followers": [
             "john",
             "jane",
-            "dawidad"
+            "dawidad",
+            "Peny"
         ],
         "following": [
             "admin",
@@ -29,8 +31,9 @@
     {
         "email": "johndoe@test.com",
         "followers": [
-            "alex",
-            "admin"
+            "admin",
+            "Peny",
+            "alex"
         ],
         "following": [
             "alex"
@@ -68,5 +71,17 @@
         ],
         "password": "123456",
         "username": "dawidad"
+    },
+    {
+        "email": "andrew18@.com",
+        "followers": [
+            "admin"
+        ],
+        "following": [
+            "john",
+            "alex"
+        ],
+        "password": "andrew123",
+        "username": "Peny"
     }
 ]

@@ -1,9 +1,21 @@
 [
     {
+        "content": "Hello my pals",
+        "likedBy": [
+            "Peny",
+            "alex",
+            "admin"
+        ],
+        "timestamp": "Apr 12, 17:52",
+        "username": "Peny"
+    },
+    {
         "content": "Hello!",
         "likedBy": [
             "dawidad",
-            "admin"
+            "admin",
+            "Peny",
+            "alex"
         ],
         "timestamp": "Apr 08, 17:30",
         "username": "john"
@@ -11,11 +23,11 @@
     {
         "content": "Hello!",
         "likedBy": [
-            "alex",
             "jane",
             "Dawid",
             "dawidad",
-            "admin"
+            "Peny",
+            "alex"
         ],
         "timestamp": "Mar 28, 15:46",
         "username": "alex"

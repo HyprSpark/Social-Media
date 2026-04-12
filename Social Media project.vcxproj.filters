@@ -33,13 +33,13 @@
     <QtMoc Include="include\FeedWindow.h">
       <Filter>include</Filter>
     </QtMoc>
-    <QtMoc Include="include\Posts.h">
+    <QtMoc Include="include\PostWidget.h">
       <Filter>include</Filter>
     </QtMoc>
-    <QtMoc Include="include\Profile.h">
+    <QtMoc Include="include\ProfileWindow.h">
       <Filter>include</Filter>
     </QtMoc>
-    <QtMoc Include="include\Messages.h">
+    <QtMoc Include="include\MessagesWindow.h">
       <Filter>include</Filter>
     </QtMoc>
   </ItemGroup>
@@ -56,13 +56,13 @@
     <QtUic Include="forms\MainFeed.ui">
       <Filter>forms</Filter>
     </QtUic>
-    <QtUic Include="forms\Posts.ui">
+    <QtUic Include="forms\ProfileWindow.ui">
       <Filter>forms</Filter>
     </QtUic>
-    <QtUic Include="forms\Profile.ui">
+    <QtUic Include="forms\MessagesWindow.ui">
       <Filter>forms</Filter>
     </QtUic>
-    <QtUic Include="forms\Messages.ui">
+    <QtUic Include="forms\PostWidget.ui">
       <Filter>forms</Filter>
     </QtUic>
   </ItemGroup>
@@ -76,19 +76,19 @@
     <ClCompile Include="src\SignUpWindow.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\userManager.cpp">
+    <ClCompile Include="src\UserManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\FeedWindow.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Posts.cpp">
+    <ClCompile Include="src\PostWidget.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Profile.cpp">
+    <ClCompile Include="src\ProfileWindow.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Messages.cpp">
+    <ClCompile Include="src\MessagesWindow.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -96,7 +96,7 @@
     <ClInclude Include="include\models\User.h">
       <Filter>include\models</Filter>
     </ClInclude>
-    <ClInclude Include="include\userManager.h">
+    <ClInclude Include="include\UserManager.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\models\MessageData.h">
@@ -130,7 +130,7 @@
     <None Include="README.md">
       <Filter>resources</Filter>
     </None>
-    <None Include="resources\User.json">
+    <None Include="resources\user.json">
       <Filter>resources</Filter>
     </None>
     <None Include="resources\posts.json">

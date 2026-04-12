@@ -1,7 +1,7 @@
-#include "Posts.h"
+#include "PostWidget.h"
 #include "models/Post.h"
-#include "Profile.h"
-#include "userManager.h"
+#include "ProfileWindow.h"
+#include "UserManager.h"
 #include <QVector>
 #include <QDebug>
 #include <QVBoxLayout>
@@ -14,16 +14,16 @@
 #include <QPixmap>         
 #include <QCoreApplication> 
 #include <QStyle>
-#include <QMessageBox>
 
-Posts::Posts(QWidget* parent)
+// Changed Posts::Posts to PostWidget::PostWidget
+PostWidget::PostWidget(QWidget* parent)
 	: QWidget(parent), isLiked(false)
 {
 	ui.setupUi(this);
 	qDebug() << "[INFO] UI: Initializing individual Post widget.";
 
 	this->setStyleSheet(
-		"Posts { "
+		"PostWidget { " // Match the CSS to the new class name
 		"   border: 1px solid #444; "
 		"   border-radius: 8px; "
 		"   background-color: #222; "
@@ -32,14 +32,14 @@ Posts::Posts(QWidget* parent)
 		"}"
 	);
 
-	connect(ui.btnLike, &QPushButton::clicked, this, &Posts::onLikeClicked);
-	connect(ui.btnUsername, &QPushButton::clicked, this, &Posts::onUsernameClicked);
-	connect(ui.btnDelete, &QPushButton::clicked, this, &Posts::onDeleteClicked);
+	connect(ui.btnLike, &QPushButton::clicked, this, &PostWidget::onLikeClicked);
+	connect(ui.btnUsername, &QPushButton::clicked, this, &PostWidget::onUsernameClicked);
+	connect(ui.btnDelete, &QPushButton::clicked, this, &PostWidget::onDeleteClicked);
 }
 
-Posts::~Posts() {}
+PostWidget::~PostWidget() {}
 
-void Posts::setPostData(const Post& data, const QString& currentLoggedInUser)
+void PostWidget::setPostData(const Post& data, const QString& currentLoggedInUser)
 {
 	currentData = data;
 	currentUser = currentLoggedInUser;
@@ -66,7 +66,6 @@ void Posts::setPostData(const Post& data, const QString& currentLoggedInUser)
 
 	QPixmap avatar(":resources/images/profile.png");
 	if (avatar.isNull()) {
-		qDebug() << "[DEBUG] UI: No avatar found in resources, using fallback character.";
 		ui.lblProfilePic->setText("?");
 	}
 	else {
@@ -85,7 +84,7 @@ void Posts::setPostData(const Post& data, const QString& currentLoggedInUser)
 	}
 }
 
-void Posts::onDeleteClicked()
+void PostWidget::onDeleteClicked()
 {
 	qDebug() << "[INFO] Post: Delete button clicked for post by" << currentData.senderUsername;
 
@@ -110,11 +109,8 @@ void Posts::onDeleteClicked()
 	QJsonArray updatedArray;
 	bool matchFound = false;
 
-	qDebug() << "[DEBUG] PERSISTENCE: Searching for post match in JSON records...";
-
 	for (const QJsonValue& value : postsArray) {
 		QJsonObject obj = value.toObject();
-		// Matching based on sender, text, and timestamp to ensure the correct post is hit
 		if (obj["username"].toString().trimmed() == currentData.senderUsername &&
 			obj["content"].toString().trimmed() == currentData.textContent &&
 			obj["timestamp"].toString().trimmed() == currentData.timestamp) {
@@ -129,24 +125,18 @@ void Posts::onDeleteClicked()
 		if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 			file.write(QJsonDocument(updatedArray).toJson());
 			file.close();
-			qDebug() << "[SUCCESS] PERSISTENCE: Post removed from JSON and file truncated.";
+			qDebug() << "[SUCCESS] PERSISTENCE: Post removed from JSON.";
 		}
-	}
-	else {
-		qDebug() << "[ERROR] PERSISTENCE: Could not find a matching post in the JSON to delete.";
 	}
 
 	this->deleteLater();
 }
 
-void Posts::onUsernameClicked()
+void PostWidget::onUsernameClicked()
 {
 	qDebug() << "[INFO] UI: Username button clicked. Opening profile for" << currentData.senderUsername;
-	Profile* profile = new Profile();
 
 	QVector<User> allUsers = UserManager::loadUsers();
-	qDebug() << "[DEBUG] Auth: Loaded" << allUsers.size() << "users to find author details.";
-
 	User author;
 	User viewer;
 	bool authorFound = false;
@@ -161,26 +151,30 @@ void Posts::onUsernameClicked()
 		}
 	}
 
-	if (!authorFound) {
-		qDebug() << "[DEBUG] Auth: Warning - Author not found in database, using fallback username.";
-		author.username = currentData.senderUsername;
-	}
+	if (!authorFound) author.username = currentData.senderUsername;
 
-	profile->setActiveUser(author, viewer);
-	profile->show();
+	QWidget* topLevel = this->window();
+	ProfileWindow* existingProfile = qobject_cast<ProfileWindow*>(topLevel);
+
+	if (existingProfile) {
+		existingProfile->setActiveUser(author, viewer);
+	}
+	else {
+		ProfileWindow* profileWindow = new ProfileWindow();
+		profileWindow->setAttribute(Qt::WA_DeleteOnClose);
+		profileWindow->setActiveUser(author, viewer);
+		profileWindow->show();
+	}
 }
 
-void Posts::onLikeClicked()
+void PostWidget::onLikeClicked()
 {
 	qDebug() << "[INFO] Post:" << (isLiked ? "Unlike" : "Like") << "requested by" << currentUser;
 
 	QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/posts.json";
 	QFile file(filePath);
 
-	if (!file.open(QIODevice::ReadOnly)) {
-		qDebug() << "[ERROR] PERSISTENCE: Cannot open posts.json to update like status.";
-		return;
-	}
+	if (!file.open(QIODevice::ReadOnly)) return;
 
 	QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
 	file.close();
@@ -229,6 +223,6 @@ void Posts::onLikeClicked()
 	if (updateSaved && file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		file.write(QJsonDocument(postsArray).toJson());
 		file.close();
-		qDebug() << "[SUCCESS] PERSISTENCE: Like status synchronized with database.";
+		qDebug() << "[SUCCESS] PERSISTENCE: Like status synchronized.";
 	}
 }

@@ -11,13 +11,13 @@ QVector<User> UserManager::loadUsers()
     QVector<User> users;
 
     // Standardizing path to look for resources in the project head
-    QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/User.json";
+    QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/user.json";
     QFile file(filePath);
 
     // Fallback mechanism
     if (!file.exists()) {
-        qDebug() << "[DEBUG] PERSISTENCE: Local User.json not found at project head, trying internal resource...";
-        file.setFileName(":/resources/User.json");
+        qDebug() << "[DEBUG] PERSISTENCE: Local user.json not found at project head, trying internal resource...";
+        file.setFileName(":/resources/user.json");
     }
 
     if (!file.open(QIODevice::ReadOnly)) {
@@ -32,7 +32,7 @@ QVector<User> UserManager::loadUsers()
     QJsonParseError parseError;
     const QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
     if (parseError.error != QJsonParseError::NoError) {
-        qDebug() << "[ERROR] JSON: Parse failed for User.json -" << parseError.errorString();
+        qDebug() << "[ERROR] JSON: Parse failed for user.json -" << parseError.errorString();
         return users;
     }
 
@@ -61,11 +61,11 @@ void UserManager::saveUser(const User& user)
         array.append(u.toJson());
     }
 
-    QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/User.json";
+    QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/user.json";
     QFile file(filePath);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        qDebug() << "[ERROR] PERSISTENCE: Could not write to User.json! Reason:" << file.errorString();
+        qDebug() << "[ERROR] PERSISTENCE: Could not write to user.json! Reason:" << file.errorString();
         return;
     }
 
@@ -151,14 +151,14 @@ void UserManager::toggleFollowing(const QString& followerName, const QString& ta
     }
 
     if (changed) {
-        QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/User.json";
+        QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/user.json";
         QFile file(filePath);
         if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             QJsonArray arr;
             for (const auto& u : users) arr.append(u.toJson());
             file.write(QJsonDocument(arr).toJson());
             file.close();
-            qDebug() << "[SUCCESS] PERSISTENCE: User.json social graph updated on disk.";
+            qDebug() << "[SUCCESS] PERSISTENCE: user.json social graph updated on disk.";
         }
     }
 }
