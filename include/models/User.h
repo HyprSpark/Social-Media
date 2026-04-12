@@ -32,7 +32,7 @@ public:
 
     /**
      * @brief Converts the C++ User object into a QJsonObject.
-     * This allows the user's data and friends list to be saved to User.json.
+     * This allows the user's data and friends list to be saved to user.json.
      */
 
     QJsonObject toJson() const

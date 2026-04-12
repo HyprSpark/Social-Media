@@ -2,7 +2,7 @@
 
 // -- Header -- //
 #include <QWidget>
-#include "ui_Posts.h" // Pointer to the visual elements for QT
+#include "ui_PostWidget.h" // Pointer to the visual elements for QT
 #include "models/Post.h"
 
 /**
@@ -11,13 +11,13 @@
 * It also provides the original user (OP) the ability to delete their post.
 */
 
-class Posts : public QWidget
+class PostWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	Posts(QWidget* parent = nullptr);
-	~Posts();
+	explicit PostWidget(QWidget* parent = nullptr);
+	~PostWidget();
 
 	/**
 	* @brief Populates the post widget with the provided content data and the current logged in user.
@@ -26,7 +26,7 @@ public:
 	void setPostData(const Post& data, const QString& currentLoggedInUser);
 
 private:
-	Ui::PostsClass ui;
+	Ui::PostWidget ui;
 	Post currentData; // Local copy of the post's data.
 	QString currentUser; // Who is currently viewing the post
 

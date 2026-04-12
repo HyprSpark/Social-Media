@@ -12,7 +12,7 @@
 
 // Forward declaration: Tells the compiler that this class exists,
 // Without needing to include the entire header file, reducing complication.
-class Messages;
+class MessagesWindow;
 
 class FeedWindow : public QMainWindow
 {
@@ -41,7 +41,7 @@ private:
 	* Keeing this as a member prevents multiple windows from being opened.
 	* It will check beofre creating a new window and will reuse the existing one if it's already open.
 	*/
-	Messages* messagesWindow = nullptr;
+	MessagesWindow* messagesWindow = nullptr;
 
 private slots:
 	// -- UI Button Functions -- //
@@ -52,7 +52,9 @@ private slots:
 	void onQuitClicked(); // Safely shuts down the entire application when the "Quit" button is clicked
 	void onSignOutClicked(); // Signs the user out and returns to the login screen when the "Sign Out" button is clicked
 	void onSortSelect(int index); // Sorts the feed based on the selected criteria (e.g., "Most Recent", "Most Liked")
+	void updateMessageButtonVisuals(); // Checks for new messages and updates the "Messages" button appearance accordingly
 
 protected:
 	void showEvent(QShowEvent* event) override; // Detects when the window is shown again
+	bool event(QEvent* e) override;
 };

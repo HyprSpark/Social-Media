@@ -2,7 +2,7 @@
 
 // -- Header -- //
 #include <QMainWindow>
-#include "ui_Messages.h" // Pointer to the visual elements for QT
+#include "ui_MessagesWindow.h" // Pointer to the visual elements for QT
 #include "models/User.h"
 
 /**
@@ -10,13 +10,13 @@
 * It allows users to read, send, and manage their inbox.
 */
 
-class Messages : public QMainWindow
+class MessagesWindow : public QMainWindow
 {
 	Q_OBJECT
 
 public:
-	Messages(QWidget* parent = nullptr);
-	~Messages();
+	MessagesWindow(QWidget* parent = nullptr);
+	~MessagesWindow();
 
 	/**
 	* @brief Recieves the User object from the feedWindow.
@@ -26,7 +26,7 @@ public:
 	void setActiveUser(const User& user);
 
 private:
-	Ui::MessagesClass ui;
+	Ui::MessagesWindow ui;
 	User currentUser;
 
 private slots:
