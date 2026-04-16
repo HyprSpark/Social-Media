@@ -4,6 +4,10 @@
 #include <QMainWindow>
 #include "ui_FeedWindow.h" // Pointer to the visual elements for QT
 #include "models/User.h"
+#include "strategies/FeedStrategy.h"
+#include "strategies/MostLikedStrategy.h"
+#include "strategies/FollowingStrategy.h"
+#include "strategies/NewestStrategy.h"
 
 /**
 * @brief The FeedWindow class represents the main interface of the application.
@@ -42,6 +46,7 @@ private:
 	* It will check beofre creating a new window and will reuse the existing one if it's already open.
 	*/
 	MessagesWindow* messagesWindow = nullptr;
+	FeedStrategy* currentStrategy = nullptr; // Pointer to the current sorting strategy being used for the feed.
 
 private slots:
 	// -- UI Button Functions -- //

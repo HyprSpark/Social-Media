@@ -4,6 +4,10 @@
 #include "MessagesWindow.h"
 #include "LoginWindow.h"
 #include "UserManager.h"
+#include "strategies/FeedStrategy.h"
+#include "strategies/MostLikedStrategy.h"
+#include "strategies/FollowingStrategy.h"
+#include "strategies/NewestStrategy.h"
 #include <QVBoxLayout>
 #include <QFile>
 #include <QJsonDocument>
@@ -32,7 +36,7 @@ FeedWindow::FeedWindow(QWidget* parent) : QMainWindow(parent) {
 
 // --- FIX 1: The Missing Destructor ---
 FeedWindow::~FeedWindow() {
-    // Standard empty destructor
+    delete currentStrategy;
 }
 
 void FeedWindow::loadPosts() {
@@ -43,7 +47,15 @@ void FeedWindow::loadPosts() {
     QJsonArray postsArray = QJsonDocument::fromJson(file.readAll()).array();
     file.close();
 
-    // Safe UI Clearing
+    QList<Post> posts;
+    for (const QJsonValue& val : postsArray)
+        posts.append(Post::fromJson(val.toObject()));
+
+    // Apply strategy if one is set
+    if (currentStrategy)
+        currentStrategy->sort(posts, currentUser);
+
+    // Clear layout
     if (ui.scrollPosts->layout()) {
         QLayoutItem* item;
         while ((item = ui.scrollPosts->layout()->takeAt(0)) != nullptr) {
@@ -55,9 +67,9 @@ void FeedWindow::loadPosts() {
         }
     }
 
-    for (const QJsonValue& val : postsArray) {
+    for (const Post& post : posts) {
         PostWidget* pw = new PostWidget(this);
-        pw->setPostData(Post::fromJson(val.toObject()), currentUser.username);
+        pw->setPostData(post, currentUser.username);
         ui.scrollPosts->layout()->addWidget(pw);
     }
 }
@@ -159,5 +171,17 @@ void FeedWindow::onQuitClicked() {
 }
 
 void FeedWindow::onSortSelect(int index) {
+    delete currentStrategy;
+
+    if (index == 0) {
+        currentStrategy = new NewestStrategy();
+    }
+    else if (index == 1) {
+        currentStrategy = new MostLikedStrategy();
+    }
+    else if (index == 2) {
+        currentStrategy = new FollowingStrategy();
+    }
+
     loadPosts();
 }
