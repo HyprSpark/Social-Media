@@ -40,6 +40,7 @@ FeedWindow::~FeedWindow() {
 }
 
 void FeedWindow::loadPosts() {
+
     QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/posts.json";
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) return;

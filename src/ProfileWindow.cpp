@@ -68,7 +68,7 @@ void ProfileWindow::setActiveUser(const User& user, const User& viewer) {
 }
 
 void ProfileWindow::onReturnClicked() {
-    this->hide();
+    this->close();
 }
 
 void ProfileWindow::onFollowClicked() {
@@ -121,7 +121,8 @@ void ProfileWindow::loadUserPosts() {
         layout->setAlignment(Qt::AlignTop);
     }
 
-    QFile file("resources/posts.json");
+    QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/posts.json";
+    QFile file(filePath);
     if (file.open(QIODevice::ReadOnly)) {
         QJsonArray postsArray = QJsonDocument::fromJson(file.readAll()).array();
         file.close();

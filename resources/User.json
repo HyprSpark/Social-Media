@@ -22,8 +22,7 @@
             "Peny"
         ],
         "following": [
-            "admin",
-            "john"
+            "admin"
         ],
         "password": "alex123",
         "username": "alex"
@@ -32,8 +31,7 @@
         "email": "johndoe@test.com",
         "followers": [
             "admin",
-            "Peny",
-            "alex"
+            "Peny"
         ],
         "following": [
             "alex"
