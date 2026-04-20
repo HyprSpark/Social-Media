@@ -39,16 +39,16 @@ void PostWidget::setPostData(const Post& data, const QString& currentLoggedInUse
     currentData = data;
     currentUser = currentLoggedInUser;
 
-    ui.btnUsername->setText(data.senderUsername);
-    ui.lblContent->setText(data.textContent);
-    ui.lblTimestamp->setText(data.timestamp);
-    ui.lblLikeCount->setText(QString::number(data.likedBy.size()));
+	ui.btnUsername->setText(data.senderUsername); // Set the username button text to the sender's username
+	ui.lblContent->setText(data.textContent); // Set the content label to the post's text content
+	ui.lblTimestamp->setText(data.timestamp); // Set the timestamp label to the post's timestamp
+	ui.lblLikeCount->setText(QString::number(data.likedBy.size())); // Set the like count label to the length of users that have liked
 
     // Setup Like Button State
     if (data.likedBy.contains(currentUser)) {
         isLiked = true;
         ui.btnLike->setText("Unlike");
-        ui.btnLike->setStyleSheet("color: #ff4757; font-weight: bold;");
+		ui.btnLike->setStyleSheet("color: #ff4757; font-weight: bold;"); // Red color and bold 
     }
     else {
         isLiked = false;
@@ -79,11 +79,12 @@ void PostWidget::onDeleteClicked()
         QJsonObject obj = value.toObject();
         if (obj["username"].toString() == currentData.senderUsername &&
             obj["content"].toString() == currentData.textContent &&
-            obj["timestamp"].toString() == currentData.timestamp) {
+            obj["timestamp"].toString() == currentData.timestamp)
+        {
             matchFound = true;
         }
         else {
-            updatedArray.append(obj);
+			updatedArray.append(obj); // Keep all posts except the one being deleted
         }
     }
 
