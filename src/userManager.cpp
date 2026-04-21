@@ -49,6 +49,7 @@ QVector<User> UserManager::loadUsers()
     return users;
 }
 
+// Adds new user to existing list of users when a new account is  created and saves it in the file
 void UserManager::saveUser(const User& user)
 {
     qDebug() << "[INFO] Auth: Registering new user record for" << user.username;
@@ -75,6 +76,7 @@ void UserManager::saveUser(const User& user)
     qDebug() << "[SUCCESS] PERSISTENCE: Saved new user. Total users in database:" << users.size();
 }
 
+// Validates the provided email and password against the user database
 bool UserManager::authenticate(const QString& email, const QString& password, User& outUser)
 {
     qDebug() << "[INFO] Auth: Verifying credentials for email:" << email;
@@ -94,6 +96,7 @@ bool UserManager::authenticate(const QString& email, const QString& password, Us
     return false;
 }
 
+// Checks if the provided email already exists in the user database. It is used during the Sign-Up process to prevent multiple accounts from being registered with the same email address
 bool UserManager::emailExists(const QString& email)
 {
     QVector<User> users = loadUsers();
@@ -105,6 +108,7 @@ bool UserManager::emailExists(const QString& email)
     return false;
 }
 
+// Checks if the provided username and email are unique across all existing users. It is used during the Sign-Up process to ensure that new users cannot register with a username or email that is already in use
 bool UserManager::isUnique(const QString& username, const QString& email)
 {
     qDebug() << "[DEBUG] Auth: Checking uniqueness for" << username << "/" << email;
@@ -116,6 +120,7 @@ bool UserManager::isUnique(const QString& username, const QString& email)
     return true;
 }
 
+// Checks if a user with the given username exists in the database. It is used to validate the recipient when sending a message, ensuring that messages are only sent to valid users
 bool UserManager::userExists(const QString& username)
 {
     QVector<User> users = loadUsers();
@@ -125,6 +130,7 @@ bool UserManager::userExists(const QString& username)
     return false;
 }
 
+// Toggles the following relationship between two users. If the follower is already following the target, it will unfollow them, and vice versa. It also updates the followers list of the target user accordingly.
 void UserManager::toggleFollowing(const QString& followerName, const QString& targetName) {
     qDebug() << "[INFO] Social: Toggling relationship between" << followerName << "and" << targetName;
 

@@ -31,9 +31,9 @@ private:
 	bool isAlreadyFollowing = false;
 
 private slots:
-	void onReturnClicked();
-	void loadUserPosts();
-	void onFollowClicked();
+	void onReturnClicked(); // Returns to the feed window.
+	void loadUserPosts(); // Loads the posts into the scroll area.
+	void onFollowClicked(); // Toggles the follow/unfollow state and updates the followers count accordingly.
 
 signals:
 	void windowClosed();

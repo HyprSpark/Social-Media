@@ -24,6 +24,7 @@ MessagesWindow::MessagesWindow(QWidget* parent)
 
 MessagesWindow::~MessagesWindow() {}
 
+// Called by MainWindow when a user logs in or switches accounts. Sets the current user for this window and updates the inbox label with the count of unread messages.
 void MessagesWindow::setActiveUser(const User& user)
 {
     currentUser = user;
@@ -60,6 +61,7 @@ void MessagesWindow::setActiveUser(const User& user)
     }
 }
 
+// Clears the message input fields and closes the MessagesWindow, returning the user to the feed window.
 void MessagesWindow::onReturnClicked()
 {
     qDebug() << "[DEBUG] UI: Wiping drafts and closing MessagesWindow.";
@@ -68,9 +70,10 @@ void MessagesWindow::onReturnClicked()
     this->close();
 }
 
+// Validates the recipient and message body, then creates a new message in messages.json with the current timestamp.
 void MessagesWindow::onSendClicked()
 {
-    QString recipient = ui.messageTarget->text().trimmed();
+	QString recipient = ui.messageTarget->text().trimmed(); // Trim whitespace for better validation
     QString messageBody = ui.messageText->text().trimmed();
 
     if (recipient.isEmpty() || messageBody.isEmpty()) {

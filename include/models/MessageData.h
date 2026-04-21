@@ -25,6 +25,7 @@ public:
         return obj;
     }
 
+	// Static method to create a MessageData object from a QJsonObject
     static MessageData fromJson(const QJsonObject& obj) {
         return MessageData(
             obj["sender"].toString("Unknown"),

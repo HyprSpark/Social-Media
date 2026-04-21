@@ -33,6 +33,7 @@ public:
         return obj;
     }
 
+	// Static method to create a Post object from a QJsonObject
     static Post fromJson(const QJsonObject& obj) {
         QStringList likesList;
         QJsonArray likesArray = obj["likedBy"].toArray();

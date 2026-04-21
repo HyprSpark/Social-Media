@@ -62,7 +62,7 @@ void PostWidget::setPostData(const Post& data, const QString& currentLoggedInUse
 
 void PostWidget::onDeleteClicked()
 {
-    auto reply = QMessageBox::question(this, "Delete Post", "Are you sure you want to delete this post?");
+    auto reply = QMessageBox::question(this, "Delete Post", "Are you sure you want to delete this post?"); // Give the user optionif they actually want to delete
     if (reply != QMessageBox::Yes) return;
 
     QString filePath = QCoreApplication::applicationDirPath() + "/../../resources/posts.json";
@@ -115,7 +115,7 @@ void PostWidget::onLikeClicked()
 
             QJsonArray likedByArray = obj["likedBy"].toArray();
             QStringList likedList;
-            for (const QJsonValue& v : likedByArray) likedList << v.toString();
+            for (const QJsonValue& v : likedByArray) likedList << v.toString(); 
 
             if (!isLiked) {
                 if (!likedList.contains(currentUser)) likedList.append(currentUser);
