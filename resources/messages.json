@@ -6,25 +6,4 @@
         "sender": "admin",
         "timestamp": "2026-04-12T17:18:57"
     },
-    {
-        "content": "Hello you are a stinky bum",
-        "isRead": true,
-        "recipient": "admin",
-        "sender": "Peny",
-        "timestamp": "2026-04-12T17:45:03"
-    },
-    {
-        "content": "Hello you are also a stinky bum bum!!!!!!!!!!",
-        "isRead": false,
-        "recipient": "john",
-        "sender": "admin",
-        "timestamp": "2026-04-12T17:46:48"
-    },
-    {
-        "content": "Yes peny |I will be ur frined or what do you call it now a days pookie or pals?",
-        "isRead": false,
-        "recipient": "Peny",
-        "sender": "admin",
-        "timestamp": "2026-04-12T19:39:42"
-    }
 ]

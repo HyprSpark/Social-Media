@@ -9,8 +9,7 @@ public:
 
         posts.erase(
 			std::remove_if(posts.begin(), posts.end(), [&currentUser](const Post& p) { // Remove posts from users that the current user is not following, and also remove the current user's own posts
-                return !currentUser.following.contains(p.senderUsername)
-                    && p.senderUsername != currentUser.username; 
+                return !currentUser.following.contains(p.senderUsername) && p.senderUsername != currentUser.username; 
                 }),
             posts.end()
         );

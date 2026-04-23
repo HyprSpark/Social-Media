@@ -48,6 +48,14 @@ void FeedWindow::loadPosts() {
 	QJsonArray postsArray = QJsonDocument::fromJson(file.readAll()).array(); // Read the contents of the file and parse it as a JSON array. Each element in this array represents a post.
     file.close();
 
+	QVector<User> allUsers = UserManager::loadUsers(); // Load all users from the user.json file to have access to their data (e.g., for sorting posts based on following)
+    for (const User& user : allUsers) {
+        if (user.username == currentUser.username) {
+            currentUser = user; // Update the current user's data with the latest information from the file (e.g., in case their following list has changed)
+            break;
+        }
+	}
+
     QList<Post> posts;
     for (const QJsonValue& val : postsArray)
 		posts.append(Post::fromJson(val.toObject())); // Convert each JSON object in the array into a Post object and store it in a list. Adds the most recent post to the first in the list

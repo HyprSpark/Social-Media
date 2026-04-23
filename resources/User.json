@@ -2,7 +2,6 @@
     {
         "email": "admin@test.com",
         "followers": [
-            "alex",
             "Dawid",
             "dawidad"
         ],
@@ -22,7 +21,6 @@
             "Peny"
         ],
         "following": [
-            "admin"
         ],
         "password": "alex123",
         "username": "alex"
